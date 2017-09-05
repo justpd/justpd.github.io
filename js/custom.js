@@ -11,7 +11,7 @@ $('.hero_section').height(window_h1);
 $('.hero_wrapper').height(window_h1);
 
 $( window ).resize(function() {
-  
+
       var window_h = $( window ).height();
     var window_h1 = window_h - 3;
     var window_p1 = window_h1/2;
@@ -48,7 +48,7 @@ $(document).ready(function() {
     } , 3500);
 
 
-        particlesJS.load('particles', 'js/particles.json', function() { 
+        particlesJS.load('particles', 'js/particles.json', function() {
       console.log('callback - particles.js config loaded');
       });
 
@@ -60,7 +60,7 @@ $(document).ready(function() {
         return false
 
     });
-	
+
     function resizeText() {
         var preferredWidth = 767;
         var displayWidth = window.innerWidth;
@@ -136,7 +136,7 @@ $(document).ready(function() {
 
         return columnNumb;
     }
-	
+
     function setColumns() {
         var winWidth = $(window).width(),
             columnNumb = splitColumns(),
