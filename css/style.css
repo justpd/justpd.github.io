@@ -18,6 +18,13 @@ i:hover{
     cursor: pointer;
 }
 
+#particles{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    right: 0;
+}
+
 .figure {
     margin: 0px;
 }
@@ -210,7 +217,7 @@ body {
     margin: 0;
 }
 
-.my-logo{position:fixed;bottom:10px;left:10px;margin:0;padding:0;z-index: 1000; color:white; opacity: 0.7;}
+.my-logo{position:fixed;bottom:10px;left:10px;margin:0;padding:0;z-index: 1001; color:white; opacity: 0.7;}
 .my-logo__pic{border:0;vertical-align:middle;width:50px;height:50px;}
 
 .body{
@@ -253,7 +260,7 @@ p {
 ---------------------------------*/
 
 #header_wrapper {
-    background: #15BA57;
+    background: #f7ca18;
     padding: 20px 0px;
 	
     border-top: 4px solid #FFFFFF;
@@ -292,7 +299,7 @@ p {
 }
 
 .navbar-inverse .navbar-nav > li > a {
-    color: #0A1525;
+    color: #000;
 }
 
 .navStyle {
@@ -346,7 +353,7 @@ p {
 }
 
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
-    color: #0A1525;
+    color: #000;
     background-color: #FFFFFF;
     border-radius: 4px;
 }
@@ -382,7 +389,8 @@ p {
 
 .hero_section {
     position: relative;
-    padding-top: 10%;
+    padding-top: 15%;
+
 }
 .hero_wrapper {
 background: rgba(10, 21, 37, 0.69);
@@ -423,7 +431,7 @@ background: rgba(10, 21, 37, 0.69);
 .top_left_cont h2 strong {
     font-weight: 700;
 	
-    color: #12D35E;
+    color: #f7ca18;
 }
 
 .top_left_cont p {
@@ -464,7 +472,7 @@ a.read_more{
 }
 a.read_more2:hover, a.read_more:hover {
     background: #fff;
-    color: #0A1525;
+    color: #000;
     border: 1px solid #fff;
 }
 a.read_more:hover {
@@ -486,14 +494,15 @@ a.read_more:hover {
 
 #service {
     padding: 60px 0px;
-    background: #11D25D;
+    background: #f7ca18;
 }
 #service h2{
-  color: #fff;
+    color: #Fff;
 
 }
 .service_wrapper {
     padding: 40px 0 40px;
+    color: black;
 }
 
 .service_section {
@@ -520,7 +529,7 @@ a.read_more:hover {
     height: 100%;
     width: 100%;
 	
-    border: 1px solid #0A1525;
+    border: 1px solid #000;
     border-radius: 50%;
 }
 
@@ -543,11 +552,11 @@ text-align: center;
 margin: 35px 0 15px; 
 }
 #service h6{
-color:#fff;
+    color: black;
 }
 .service_block p {
     font-size: 16px;
-    color: #fff;
+        color: black;
     margin: 0 0 35px 0; 
 }
 	
@@ -798,7 +807,7 @@ img {
 
 
 .client_logos {
-    background: #11D25D;
+    background: #f7ca18;
     padding: 60px 0;
     margin-top: 60px;
 }
@@ -889,7 +898,7 @@ color:#A3ACBA;
 	position: absolute;
 	font-family: FontAwesome;
 	font-size: 1.125em;
-	color: #11D25D;
+	color: #f7ca18;
 	left: 0px;
 	top: 3px;
 }
@@ -1024,7 +1033,7 @@ border-radius: 50%;
 }
 .centered {
 text-align: center;
-/* background: #0A1525; */
+/* background: #000; */
 }
 #team .fa {
 width: 30px;
@@ -1035,14 +1044,28 @@ font-size: 15px;
 line-height: 30px;
 outline: 0;
 color: #fff;
-background-color: #11D25D;
+background-color: #f7ca18;
 -webkit-transition: all .3s;
 -moz-transition: all .3s;
 transition: all .3s;
 }
 #aboutUs {
     padding: 60px 0;
-    background: #0A1525;
+/*    background: #000;*/
+background: #FFFFFF;
+    color: black;
+
+/*background-image: url(../img/main3.jpg);
+    -webkit-background-size: cover ;
+    background-size: cover ;*/
+}
+
+.h3_yellow{
+    color: #f7ca18;
+}
+
+.p_black{
+   color: black ;
 }
 
 /* Contact
@@ -1233,7 +1256,7 @@ transition: all .3s;
     width: 175px;
     height: 50px;
     letter-spacing: 0px;
-    background: #15BA57;
+    background: #f7ca18;
     border-radius: 3px;
     color: #ffffff;
     font-size: 16px;
@@ -1254,7 +1277,7 @@ transition: all .3s;
 ---------------------------------*/
 
 .footer_wrapper {
-    background: #0A1525;
+    background: #000;
 }
 
 .footer_bottom {
@@ -1271,7 +1294,7 @@ transition: all .3s;
 
 .footer_bottom span a {
     display: inline-block;
-    color: #15BA57;
+    color: #f7ca18;
     font-size: 16px;
     transition: all 0.3s ease-in-out;
     -moz-transition: all 0.3s ease-in-out;
@@ -1390,10 +1413,10 @@ transition: all .3s;
 }
 
 #filters ul li a:hover h5, #filters ul li a.active h5 {
-    background: #11D25D;
+    background: #f7ca18;
     color: #FFFFFF;
     text-decoration: none;
-    border: #11D25D solid 1px;
+    border: #f7ca18 solid 1px;
 }
 
 .section-title h2 {
@@ -2065,7 +2088,7 @@ display:none;
     height: 100%;
     z-index: 999;
     -webkit-z-index: 999;
-    background: #11D25D;
+    background: #f7ca18;
 
 }
 
@@ -2147,7 +2170,7 @@ z-index: 997;
 box-sizing: border-box;
 -moz-box-sizing: border-box;
 
-background: rgba(230,230,230,0.6);
+background: rgba(0,0,0,0.6);
 
   position: absolute;
   -webkit-transition: 1.3s;
@@ -2167,14 +2190,30 @@ background: rgba(230,230,230,0.6);
   0% { 
 width: 0px;
    }
-  90% { 
-width: 40%;
-margin: -2px 0 0 -20%;
-background: rgba(230,230,230,0.9);
+  70% { 
+width: 30%;
+margin: -2px 0 0 -15%;
+background: rgba(0,0,0,0.9);
 
    }
   100% { 
 width: 0px;
  margin: -2px 0 0 -0px;
+ background: rgba(255,255,255,0.9);
    }
+}
+
+
+
+#portfolio_wrapper h2{
+    opacity: 0;
+    -webkit-transition: all .8s;
+    -o-transition: all .8s;
+    transition: all .8s;
+}
+#portfolio_wrapper figure:hover h2{
+    opacity: 1;
+        -webkit-transition: all .8s;
+    -o-transition: all .8s;
+    transition: all .8s;
 }

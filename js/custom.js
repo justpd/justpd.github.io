@@ -1,9 +1,3 @@
-/*
-Author URI: http://webthemez.com/
-Note: 
-Licence under Creative Commons Attribution 3.0 
-Do not remove the back-link in this web template 
--------------------------------------------------------*/
 
 $(window).load(function() {
     jQuery('#all').click();
@@ -20,9 +14,12 @@ $( window ).resize(function() {
   
       var window_h = $( window ).height();
     var window_h1 = window_h - 3;
+    var window_p1 = window_h1/2;
 
     $('.hero_section').height(window_h1);
     $('.hero_wrapper').height(window_h1);
+
+
 });
 
 $(document).ready(function() {
@@ -45,11 +42,15 @@ $(document).ready(function() {
     } , 1500);
 
     setTimeout( function() {
-    $('#round').removeClass('loaded_round');
     $('#round').removeClass('round');
     $('.pl').addClass('pl_loaded');
     showMenu();
     } , 3500);
+
+
+        particlesJS.load('particles', 'js/particles.json', function() { 
+      console.log('callback - particles.js config loaded');
+      });
 
 
 

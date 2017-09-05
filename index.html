@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, maximum-scale=1">
-<title>Ainim</title>
+<title>Винс</title>
 <link rel="icon" href="favicon1.png" type="image/png">
 <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="js/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
 <link href="css/style.css" rel="stylesheet" type="text/css"> 
 <link href="css/font-awesome.css" rel="stylesheet" type="text/css"> 
 <link href="css/animate.css" rel="stylesheet" type="text/css">
+<script src="js/particles.min.js"></script>
  
 <!--[if lt IE 9]>
     <script src="js/respond-1.1.0.min.js"></script>
@@ -37,9 +38,9 @@
           <div class="col-md-12">
 		   
             <div class="top_left_cont zoomIn wow animated"> 
-              <h2>Добро пожаловать в теплый уголок художкника<br/><strong>Saesa omentien lle</strong></h2>
+              <h2>Добро пожаловать в теплый уголок фотографа <br/><strong>Евгений Винс</strong></h2>
  
-              <a href="#" onclick="locateBack();" class="read_more2">Рисунки</a> </div>
+              <a href="#" onclick="locateBack();" class="read_more2">Портфолио</a> </div>
           </div> 
         </div>
       </div>
@@ -54,6 +55,7 @@
     <div class="header_box">
       <div class="logo"><a href="#"><img src="img/logo.png" alt="logo"></a></div>
 	  <nav class="navbar navbar-inverse" role="navigation">
+    <div id="particles"></div>
       <div class="navbar-header">
         <button type="button" id="nav-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav"> <span class="sr-only"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
         </div>
@@ -61,9 +63,9 @@
 			<ul class="nav navbar-nav" id="mainNav">
 			  <li class="active"><a href="#hero_section" class="scroll-link">Главная</a></li>
 			  <li><a href="#aboutUs" class="scroll-link">Обо мне</a></li>
-			  <li><a href="#service" class="scroll-link">Мои Персонажи</a></li>
-			  <li><a href="#Portfolio" class="scroll-link">Мои Рисунки</a></li>
-        <li><a href="https://vk.com/strangedrawing" target="_blank" class="scroll-link">Группа в ВК</a></li> 
+			  <li><a href="#service" class="scroll-link">Мои .....</a></li>
+			  <li><a href="#Portfolio" class="scroll-link">Мои Работы</a></li>
+        <li><a href="https://vk.com/strangedrawing" target="_blank" class="scroll-link">Соц.Сети</a></li> 
 			</ul>
       </div>
 	 </nav>
@@ -75,22 +77,22 @@
 <section id="aboutUs"><!--Aboutus-->
 <div class="inner_wrapper about-us aboutUs-container fadeInLeft animated wow">
   <div class="container">
-    <h2>Кухтурцева Анастасия</h2>
-	<h6>"Где дух не водит рукой художника, там нет искусства."</h6>
+    <h2 class="h3_yellow" >Евгений Винс</h2>
+	<h6 class="p_black">"Цитата или фраза"</h6>
     <div class="inner_section">
  <div class="row">
       <div class="col-md-6"> <img class="img-responsive" src="img/about1.jpg" align=""> </div>
       <div class="col-md-6">
-        <h3>Заголовок</h3>
-        <p>текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст </p> 
+        <h3 class="h3_yellow">Заголовок</h3>
+        <p class="p_black">текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст </p> 
          
-        <p>текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст 
+        <p class="p_black">текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст 
 									</p>
 
 									<ul class="about-us-list">
-										<li class="points">если надо, текст текст , если нужно </li>
-                    <li class="points">если надо, текст текст , если нужно </li>
-										<li class="points">если надо, текст текст , если нужно </li>
+										<li class="points">если надо, текст текст </li>
+                    <li class="points">если надо, текст текст </li>
+										<li class="points">если надо, текст текст </li>
 									</ul><!-- /.about-us-list -->
 								 
       </div>
@@ -105,40 +107,40 @@
 <!--Service-->
 <section  id="service">
   <div class="container">
-    <h2>Мои персонажи</h2>
+    <h2>Мои лучшие клиенты </h2>
 	<h6>Текст текст текст текст</h6>
     <div class="service_wrapper">
       <div class="row">
         <div class="col-md-3">
-		<div class="service_icon delay-03s animated wow  zoomIn"> <span><i class="fa fa-user-o" onclick="openCharPage1();"></i></span> </div>
+		<div class="service_icon delay-03s animated wow  zoomIn"> <span><i class="fa fa-globe" onclick="openCharPage1();"></i></span> </div>
           <div class="service_block">
             
-            <h3 class="animated fadeInUp wow"> Аиним  </h3>
+            <h3 class="animated fadeInUp wow"> Элемент 1</h3>
             <p class="animated fadeInDown wow"> для продолжения нажми на иконку </p>
           </div>
         </div>
         <div class="col-md-3"> 
 
-		<div class="service_icon icon2  delay-03s animated wow zoomIn"> <span><i class="fa fa-user-o"  onclick="openCharPage2();"></i></span> </div> 
+		<div class="service_icon icon2  delay-03s animated wow zoomIn"> <span><i class="fa fa-users"  onclick="openCharPage2();"></i></span> </div> 
 		<div class="service_block">
-            <h3 class="animated fadeInUp wow"> Ивиндил Аддингтон </h3>
+            <h3 class="animated fadeInUp wow"> Элемент 2</h3>
             <p class="animated fadeInDown wow">для продолжения нажми на иконку </p>
           </div>
         </div>
         <div class="col-md-3">
 
-		<div class="service_icon icon3  delay-03s animated wow zoomIn"> <span><i class="fa fa-user-o "  onclick="openCharPage3();"></i></span> </div>
+		<div class="service_icon icon3  delay-03s animated wow zoomIn"> <span><i class="fa fa-trophy "  onclick="openCharPage3();"></i></span> </div>
           <div class="service_block">
             
-            <h3 class="animated fadeInUp wow"> Ки </h3>
+            <h3 class="animated fadeInUp wow"> Элемент 3</h3>
             <p class="animated fadeInDown wow">для продолжения нажми на иконку  </p>
           </div>
         </div>
 		  <div class="col-md-3">
-		<div class="service_icon icon3  delay-03s animated wow zoomIn"> <span><i class="fa fa-user-o"  onclick="openCharPage4();"></i></span> </div>
+		<div class="service_icon icon3  delay-03s animated wow zoomIn"> <span><i class="fa fa-star"  onclick="openCharPage4();"></i></span> </div>
           <div class="service_block">
             
-            <h3 class="animated fadeInUp wow"> Эниф </h3>
+            <h3 class="animated fadeInUp wow"> Элемент 4</h3>
             <p class="animated fadeInDown wow">для продолжения нажми на иконку </p>
           </div>
         </div>
@@ -161,7 +163,7 @@
     
     <!-- Title -->
     <div class="section-title">
-      <h2>Мои рисунки</h2>
+      <h2>Мои работы</h2>
 	<h6>если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст</h6>
 	  
     </div>
@@ -201,112 +203,211 @@
     
     <!-- Portfolio Wrapper -->
     <div class="isotope fadeInLeft animated wow grid" style="position: relative; overflow: hidden; height: 480px;" id="portfolio_wrapper">  
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four   filter4 isotope-item effect-oscar">
+
+
+
+
+
+
+
+
+
+      <!-- Portfolio Item  Filter 1-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter1 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/1/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/1/Full/portfolio_pic1.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+
+            <!-- Portfolio Item  Filter 1-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter1 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/1/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/1/Full/portfolio_pic2.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+                  <!-- Portfolio Item  Filter 1-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter1 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/1/portfolio_pic3.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/1/Full/portfolio_pic3.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Portfolio Item  Filter 2-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter2 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/2/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/2/Full/portfolio_pic1.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+
+            <!-- Portfolio Item  Filter 2-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter2 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/2/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/2/Full/portfolio_pic2.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Portfolio Item  Filter 3-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter3 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/3/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/3/Full/portfolio_pic1.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+
+            <!-- Portfolio Item  Filter 3-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter3 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/3/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/3/Full/portfolio_pic2.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+                  <!-- Portfolio Item  Filter 3-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter3 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/3/portfolio_pic3.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/3/Full/portfolio_pic3.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Portfolio Item  Filter 4-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
 	   
         <div class="portfolio_img"> 
-		<img src="img/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
+		<img src="img/4/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
 			<figcaption>		
 				<div>
-				  <a href="img/portfolio_pic1.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-      
-      <!-- Portfolio Item-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(337px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four  filter2 isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic2.jpg" alt="Portfolio 1"> </div>
-        	<figcaption>		
-				<div>
-				  <a href="img/portfolio_pic2.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-      
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(674px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four  filter2  isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic3.jpg" alt="Portfolio 1"> </div>
-       <figcaption>		
-				<div>
-				  <a href="img/portfolio_pic3.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-        </figure>
-      <!--/Portfolio Item--> 
-      
-      <!-- Portfolio Item-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(1011px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four  filter3  filter1 web isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic4.jpg" alt="Portfolio 1"> </div>
-         <figcaption>		
-				<div>
-				  <a href="img/portfolio_pic4.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-      </figure>
-      <!-- Portfolio Item --> 
-      
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four  filter2 isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic5.jpg" alt="Portfolio 1"> </div>
-       <figcaption>		
-				<div>
-				  <a href="img/portfolio_pic5.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-      </figure>
-      <!--/Portfolio Item --> 
-      
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(337px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four  web isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic6.jpg" alt="Portfolio 1"> </div>
-       <figcaption>		
-				<div>
-				  <a href="img/portfolio_pic6.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-      </figure>
-      <!--/Portfolio Item --> 
-      
-      <!-- Portfolio Item  -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(674px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four  filter2 web isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic7.jpg" alt="Portfolio 1"> </div>       
-       <figcaption>		
-				<div>
-				  <a href="img/portfolio_pic7.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-       </figure>
-      <!--/Portfolio Item --> 
-      
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(1011px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four   filter3 isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic8.jpg" alt="Portfolio 1"> </div>       
-      <figcaption>		
-				<div>
-				  <a href="img/portfolio_pic8.jpg" class="fancybox"> 
+				  <a href="img/4/Full/portfolio_pic1.jpg" class="fancybox"> 
 					<h2> Просмотр <span></span></h2>
 							<p> </p>
 				  </a>
@@ -315,12 +416,15 @@
         </figure>
       <!--/Portfolio Item --> 
 
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(1011px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four   filter5 isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic8.jpg" alt="Portfolio 1"> </div>       
+
+            <!-- Portfolio Item  Filter 4-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/4/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
       <figcaption>    
         <div>
-          <a href="img/portfolio_pic8.jpg" class="fancybox"> 
+          <a href="img/4/Full/portfolio_pic2.jpg" class="fancybox"> 
           <h2> Просмотр <span></span></h2>
               <p> </p>
           </a>
@@ -329,12 +433,14 @@
         </figure>
       <!--/Portfolio Item --> 
 
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(1011px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four   filter3 isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic8.jpg" alt="Portfolio 1"> </div>       
+                  <!-- Portfolio Item  Filter 4-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/4/portfolio_pic3.jpg"  alt="Portfolio 1"> </div> 
       <figcaption>    
         <div>
-          <a href="img/portfolio_pic8.jpg" class="fancybox"> 
+          <a href="img/4/Full/portfolio_pic3.jpg" class="fancybox"> 
           <h2> Просмотр <span></span></h2>
               <p> </p>
           </a>
@@ -343,12 +449,14 @@
         </figure>
       <!--/Portfolio Item --> 
 
-      <!-- Portfolio Item -->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(1011px, 240px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four   filter3 isotope-item effect-oscar">
-        <div class="portfolio_img"> <img src="img/portfolio_pic8.jpg" alt="Portfolio 1"> </div>       
+                  <!-- Portfolio Item  Filter 4-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/4/portfolio_pic4.jpg"  alt="Portfolio 1"> </div> 
       <figcaption>    
         <div>
-          <a href="img/portfolio_pic8.jpg" class="fancybox"> 
+          <a href="img/4/Full/portfolio_pic4.jpg" class="fancybox"> 
           <h2> Просмотр <span></span></h2>
               <p> </p>
           </a>
@@ -356,6 +464,26 @@
       </figcaption>
         </figure>
       <!--/Portfolio Item --> 
+
+                  <!-- Portfolio Item  Filter 4-->
+      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
+     
+        <div class="portfolio_img"> 
+    <img src="img/4/portfolio_pic5.jpg"  alt="Portfolio 1"> </div> 
+      <figcaption>    
+        <div>
+          <a href="img/4/Full/portfolio_pic5.jpg" class="fancybox"> 
+          <h2> Просмотр <span></span></h2>
+              <p> </p>
+          </a>
+        </div>
+      </figcaption>
+        </figure>
+      <!--/Portfolio Item --> 
+
+      
+      
+      
       
     </div>
     <!--/Portfolio Wrapper --> 
