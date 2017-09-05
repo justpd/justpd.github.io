@@ -202,8 +202,6 @@ function locateBack(){
     $('.pl').removeClass('pl_loaded');
     $('.pl__r').addClass('full_red');
     $('.pl__l').addClass('full_red');
-    $('#round').removeClass('loaded_round');
-    $('#round').removeClass('round');
     } , 200);
 
     setTimeout( function() {
