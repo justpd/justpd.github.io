@@ -1,521 +1,131 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, maximum-scale=1">
-<title>Винс</title>
-<link rel="icon" href="favicon1.png" type="image/png">
-<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="js/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-<link href="css/style.css" rel="stylesheet" type="text/css"> 
-<link href="css/font-awesome.css" rel="stylesheet" type="text/css"> 
-<link href="css/animate.css" rel="stylesheet" type="text/css">
-<script src="js/particles.min.js"></script>
- 
-<!--[if lt IE 9]>
-    <script src="js/respond-1.1.0.min.js"></script>
-    <script src="js/html5shiv.js"></script>
-    <script src="js/html5element.js"></script>
-<![endif]-->
- 
-</head>
-<body>
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <title> DeLight web studio</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Веб студия DeLight">
+    <meta name="author" content="Kozhanov Nurzhan">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-   <div class="my-logo"><img src="favicon1.png" class="my-logo__pic"></div>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- Иконка сайта -->
+    <link rel="shortcut icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/favicon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-touch-icon-114x114.png">
+    <!-- Стили -->
+    
+    <link rel="stylesheet" href="fullpage/jquery.fullPage.css">
+    <link rel="stylesheet" href="icomoon/style.css">
+    <script src="js/particles.min.js"></script>
+    <link rel="stylesheet" id="anim" href="animate.css">
+
+    <link rel="stylesheet" id="styleofpage" href="style.css">
+    <script src="js/wow.min.js"></script>
+    <link rel="stylesheet" href="remodal/remodal.css">
+<link rel="stylesheet" href="remodal/remodal-default-theme.css">
+  </head>
+
+  <body>
+
+   <div class="my-logo"><img src="images/logo.png" class="my-logo__pic" onclick="location='#main';"></div>
         
         <div class="pl">
-          <div class="round"></div>
-          <div class="pl__l"></div>
-          <div class="pl__r"></div>
+          <div id ="round" class="round"></div>
+          <div class="pl__l">
+              
+          </div>
+          <div class="pl__r">
+              
+          </div>
   </div>
-<div class="body">
-<!--Hero_Section-->
-<section id="hero_section" class="top_cont_outer " >
-  <div class="hero_wrapper" >
-    <div class="container">
-      <div class="hero_section">
-        <div class="row">
-          <div class="col-md-12">
-		   
-            <div class="top_left_cont zoomIn wow animated"> 
-              <h2>Добро пожаловать в теплый уголок фотографа <br/><strong>Евгений Винс</strong></h2>
- 
-              <a href="#" onclick="locateBack();" class="read_more2">Портфолио</a> </div>
-          </div> 
-        </div>
-      </div>
+        
+
+
+
+
+<div id="loading_system" class="full_page_noloaded">
+      <!-- Начало кода -->  
+    <ul id="siteMenu">
+        <li class="menu_list_site" class="active"> <a onclick="showMenu();" class="menu_list_a">Меню</a></li>
+    </ul>
+
+      <div class="hideMenu" id="showMenu">
+                <div class="buttons_menu">
+                  <div id="menu1" class="menu_button" onclick="locate('main');"> Главная</div>
+                  <div id="menu2" class="menu_button" onclick="locate('page2');"> О нас</div>
+                  <div id="menu3" class="menu_button" onclick="locate('page3');"> Прайс лист</div>
+                  <div id="menu4" class="menu_button" onclick="locate('page4');"> Заказать</div>
+                </div>
+
     </div>
-  </div>
-</section>
-<!--Hero_Section--> 
 
-<!--Header_section-->
-<header id="header_wrapper">
-  <div class="container">
-    <div class="header_box">
-      <div class="logo"><a href="#"><img src="img/logo.png" alt="logo"></a></div>
-	  <nav class="navbar navbar-inverse" role="navigation">
-    <div id="particles"></div>
-      <div class="navbar-header">
-        <button type="button" id="nav-toggle" class="navbar-toggle" data-toggle="collapse" data-target="#main-nav"> <span class="sr-only"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-        </div>
-	    <div id="main-nav" class="collapse navbar-collapse navStyle">
-			<ul class="nav navbar-nav" id="mainNav">
-			  <li class="active"><a href="#hero_section" class="scroll-link">Главная</a></li>
-			  <li><a href="#aboutUs" class="scroll-link">Обо мне</a></li>
-			  <li><a href="#service" class="scroll-link">Мои .....</a></li>
-			  <li><a href="#Portfolio" class="scroll-link">Мои Работы</a></li>
-        <li><a href="https://vk.com/strangedrawing" target="_blank" class="scroll-link">Соц.Сети</a></li> 
-			</ul>
-      </div>
-	 </nav>
+    <div class="hideBlock" onclick="hideMenu();" > 
+    <div class="hidenPhoto">
+      Студия веб-дизайна - "DeLight"
     </div>
-  </div>
-</header>
-<!--Header_section--> 
-
-<section id="aboutUs"><!--Aboutus-->
-<div class="inner_wrapper about-us aboutUs-container fadeInLeft animated wow">
-  <div class="container">
-    <h2 class="h3_yellow" >Евгений Винс</h2>
-	<h6 class="p_black">"Цитата или фраза"</h6>
-    <div class="inner_section">
- <div class="row">
-      <div class="col-md-6"> <img class="img-responsive" src="img/about1.jpg" align=""> </div>
-      <div class="col-md-6">
-        <h3 class="h3_yellow">Заголовок</h3>
-        <p class="p_black">текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст </p> 
-         
-        <p class="p_black">текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст текст 
-									</p>
-
-									<ul class="about-us-list">
-										<li class="points">если надо, текст текст </li>
-                    <li class="points">если надо, текст текст </li>
-										<li class="points">если надо, текст текст </li>
-									</ul><!-- /.about-us-list -->
-								 
-      </div>
     </div>
-	     </div>
-  </div> 
+
+
+<div id="fullpage"> 
+<!-- Страницы -->
+  <div class="section p1">
+              
+              <div id="blur">
+              <div class="p1__black wow bounceInDown" data-wow-delay="1s" data-wow-iteration="1" >
+                  <div id="particles"></div>
+              </div>
+              </div>
   </div>
-</section>
-<!--Aboutus--> 
+
+  <div class="section p2 clearfix">
+       
+  </div>
 
 
-<!--Service-->
-<section  id="service">
-  <div class="container">
-    <h2>Мои лучшие клиенты </h2>
-	<h6>Текст текст текст текст</h6>
-    <div class="service_wrapper">
-      <div class="row">
-        <div class="col-md-3">
-		<div class="service_icon delay-03s animated wow  zoomIn"> <span><i class="fa fa-globe" onclick="openCharPage1();"></i></span> </div>
-          <div class="service_block">
+  <div class="section p3" clearfix>
+
+             <div class="content_p3">
+               <a href="#archive"><div class="info_p3 p3_left p3_top"><i class="icon-books"></i></div></a>
+               <a href="#school"><div class="info_p3 p3_right p3_top"><i class="icon-clipboard"></i></div></a>
+               <a href="#achievements"><div class="info_p3 p3_left p3_bot"><i class="icon-star-full"></i></div></a>
+               <a href="#world"><div class="info_p3 p3_right p3_bot"><i class="icon-earth"></i></div></a>       
+             </div>
+  </div>
+             
+
             
-            <h3 class="animated fadeInUp wow"> Элемент 1</h3>
-            <p class="animated fadeInDown wow"> для продолжения нажми на иконку </p>
-          </div>
-        </div>
-        <div class="col-md-3"> 
-
-		<div class="service_icon icon2  delay-03s animated wow zoomIn"> <span><i class="fa fa-users"  onclick="openCharPage2();"></i></span> </div> 
-		<div class="service_block">
-            <h3 class="animated fadeInUp wow"> Элемент 2</h3>
-            <p class="animated fadeInDown wow">для продолжения нажми на иконку </p>
-          </div>
-        </div>
-        <div class="col-md-3">
-
-		<div class="service_icon icon3  delay-03s animated wow zoomIn"> <span><i class="fa fa-trophy "  onclick="openCharPage3();"></i></span> </div>
-          <div class="service_block">
-            
-            <h3 class="animated fadeInUp wow"> Элемент 3</h3>
-            <p class="animated fadeInDown wow">для продолжения нажми на иконку  </p>
-          </div>
-        </div>
-		  <div class="col-md-3">
-		<div class="service_icon icon3  delay-03s animated wow zoomIn"> <span><i class="fa fa-star"  onclick="openCharPage4();"></i></span> </div>
-          <div class="service_block">
-            
-            <h3 class="animated fadeInUp wow"> Элемент 4</h3>
-            <p class="animated fadeInDown wow">для продолжения нажми на иконку </p>
-          </div>
-        </div>
-
-
-      </div> 
-    </div>
+  <div class="section p4">
+                
   </div>
-</section>
-<!--Service-->
 
+  <div class="section p5 clearfix">
 
-
-
-<!-- Portfolio -->
-<section id="Portfolio" class="content"> 
-  
-  <!-- Container -->
-  <div class="container portfolio_title"> 
-    
-    <!-- Title -->
-    <div class="section-title">
-      <h2>Мои работы</h2>
-	<h6>если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст если надо, текст</h6>
-	  
-    </div>
-    <!--/Title --> 
-    
   </div>
-  <!-- Container -->
-  
-  <div class="portfolio-top"></div>
-  
-  <!-- Portfolio Filters -->
-  <div class="portfolio"> 
-    
-    <div id="filters" class="sixteen columns">
-      <ul class="clearfix">
-        <li><a id="all" href="#" data-filter="*" class="active">
-          <h5>Все</h5>
-          </a></li>
-        <li><a class="" href="#" data-filter=".filter1">
-          <h5>Фильтр1</h5>
-          </a></li>
-        <li><a class="" href="#" data-filter=".filter2">
-          <h5>Фильтр2</h5>
-          </a></li>
-        <li><a class="" href="#" data-filter=".filter3">
-          <h5>Фильтр3</h5>
-          </a></li>
-        <li><a class="" href="#" data-filter=".filter4">
-          <h5>Фильтр4</h5>
-          </a></li>
-          <li><a class="" href="#" data-filter=".filter5">
-          <h5>Фильтр5</h5>
-          </a></li> 
-      </ul>
-    </div>
-    <!--/Portfolio Filters --> 
-    
-    <!-- Portfolio Wrapper -->
-    <div class="isotope fadeInLeft animated wow grid" style="position: relative; overflow: hidden; height: 480px;" id="portfolio_wrapper">  
 
 
-
-
-
-
-
-
-
-      <!-- Portfolio Item  Filter 1-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter1 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/1/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/1/Full/portfolio_pic1.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-            <!-- Portfolio Item  Filter 1-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter1 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/1/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/1/Full/portfolio_pic2.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-                  <!-- Portfolio Item  Filter 1-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter1 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/1/portfolio_pic3.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/1/Full/portfolio_pic3.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Portfolio Item  Filter 2-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter2 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/2/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/2/Full/portfolio_pic1.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-            <!-- Portfolio Item  Filter 2-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter2 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/2/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/2/Full/portfolio_pic2.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <!-- Portfolio Item  Filter 3-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter3 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/3/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/3/Full/portfolio_pic1.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-            <!-- Portfolio Item  Filter 3-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter3 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/3/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/3/Full/portfolio_pic2.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-                  <!-- Portfolio Item  Filter 3-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter3 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/3/portfolio_pic3.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/3/Full/portfolio_pic3.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      <!-- Portfolio Item  Filter 4-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
-	   
-        <div class="portfolio_img"> 
-		<img src="img/4/portfolio_pic1.jpg"  alt="Portfolio 1"> </div> 
-			<figcaption>		
-				<div>
-				  <a href="img/4/Full/portfolio_pic1.jpg" class="fancybox"> 
-					<h2> Просмотр <span></span></h2>
-							<p> </p>
-				  </a>
-				</div>
-			</figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-
-            <!-- Portfolio Item  Filter 4-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/4/portfolio_pic2.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/4/Full/portfolio_pic2.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-                  <!-- Portfolio Item  Filter 4-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/4/portfolio_pic3.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/4/Full/portfolio_pic3.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-                  <!-- Portfolio Item  Filter 4-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/4/portfolio_pic4.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/4/Full/portfolio_pic4.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-                  <!-- Portfolio Item  Filter 4-->
-      <figure style="position: absolute; left: 0px; top: 0px; transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1); width: 337px; opacity: 1;" class="portfolio-item one-four filter4 isotope-item effect-oscar">
-     
-        <div class="portfolio_img"> 
-    <img src="img/4/portfolio_pic5.jpg"  alt="Portfolio 1"> </div> 
-      <figcaption>    
-        <div>
-          <a href="img/4/Full/portfolio_pic5.jpg" class="fancybox"> 
-          <h2> Просмотр <span></span></h2>
-              <p> </p>
-          </a>
-        </div>
-      </figcaption>
-        </figure>
-      <!--/Portfolio Item --> 
-
-      
-      
-      
-      
-    </div>
-    <!--/Portfolio Wrapper --> 
-    
   </div>
-  <!--/Portfolio Filters -->
-  
-  <div class="portfolio_btm"></div>
-  
-  
-  <div id="project_container">
-    <div class="clear"></div>
-    <div id="project_data"></div>
-  </div>
- 
-  
-</section>
-<!--/Portfolio --> 
-
-
 </div>
- 
+</div>
+   
+        
+      <!-- Конец кода -->
 
-<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<script type="text/javascript" src="js/jquery-scrolltofixed.js"></script>
-<script type="text/javascript" src="js/jquery.nav.js"></script> 
-<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
-<script type="text/javascript" src="js/jquery.isotope.js"></script>
-<script src="js/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script> 
-<script type="text/javascript" src="js/wow.js"></script> 
-<script type="text/javascript" src="js/custom.js"></script>
+<div class="remodal" data-remodal-id="archive">
+<button data-remodal-action="close" class="remodal-close"></button>
+  <h1>Наш архив файлов </h1>
+  <p>
+    Страничка с нашими фотографиями, видео-файлами, с нашим творчеством и многое другое !
+  </p>
+  <br>
+  <a class="remodal-confirm" href="archive/index.html">Посмотреть</a>
+</div>
 
-</body>
+    <!-- Подключаем скрипты -->
+    <script src="js/jquery-3.1.0.min.js"></script>
+    <script src="fullpage/jquery.fullPage.min.js"></script>
+    <script src="remodal/remodal.min.js"></script>
+    <script src="js/js.js"></script>
+  </body>
 </html>
