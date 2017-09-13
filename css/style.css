@@ -5,9 +5,7 @@ Licence under Creative Commons Attribution 3.0
 -------------------------------------------------------*/
 
 @charset "utf-8";
-@import url(http://fonts.googleapis.com/css?family=Raleway:800,700,400);
-@import url(http://fonts.googleapis.com/css?family=Signika:400,600);
-
+font-family: 'Roboto', sans-serif;
 /* Reset
 ---------------------------------*/
 ul {
@@ -139,19 +137,19 @@ a, a:hover, a:active {
 /*---------------*/
 
 figure.effect-oscar {
-	background: -webkit-linear-gradient(45deg, #22682a 0%, #9b4a1b 40%, #3a342a 100%);
-	background: linear-gradient(45deg, #22682a 0%,#9b4a1b 40%,#3a342a 100%);
+	background: rgba(0, 0, 0, 0.61);
+	background: rgba(0, 0, 0, 0.61);
 }
 
 figure.effect-oscar img {
 	opacity: 0.9;
 	-webkit-transition: opacity 0.1s;
-	transition: opacity 0.1s;
+	transition: opacity 1s;
 }
 
 figure.effect-oscar figcaption {
 	padding: 3em;
-	background-color: rgba(10, 21, 37, 0.81);
+	background-color: rgba(0, 0, 0, 0.61);
 	-webkit-transition: background-color 0.1s;
 	transition: background-color 0.1s;
 }
@@ -261,7 +259,7 @@ p {
 
 #header_wrapper {
     background: #f7ca18;
-    padding: 20px 0px;
+    padding: 0px 0px 5px 0px;
 
     border-top: 4px solid #FFFFFF;
 	box-shadow: 1px 1px 4px rgba(60, 60, 60, 0.44);
@@ -270,7 +268,6 @@ p {
 
 .header_box {
     position: relative;
-    /* z-index: 9999999999999999999999999999999999; */
 }
 
 .logo {
@@ -494,7 +491,7 @@ a.read_more:hover {
 ---------------------------------*/
 
 #service {
-    padding: 60px 0px;
+    padding: 60px 0px 15px 0px;
     background: #f7ca18;
 }
 #service h2{
@@ -1051,7 +1048,7 @@ background-color: #f7ca18;
 transition: all .3s;
 }
 #aboutUs {
-    padding: 60px 0;
+    padding: 15px 0;
 /*    background: #000;*/
 background: #FFFFFF;
     color: black;
@@ -1062,7 +1059,8 @@ background: #FFFFFF;
 }
 
 .h3_yellow{
-    color: #f7ca18;
+    /*color: #f7ca18;*/
+    color: #000;
 }
 
 .p_black{
@@ -2207,14 +2205,39 @@ width: 0px;
 
 
 #portfolio_wrapper h2{
-    opacity: 0;
+    opacity: 1;
     -webkit-transition: all .8s;
     -o-transition: all .8s;
     transition: all .8s;
 }
-#portfolio_wrapper figure:hover h2{
+
+#portfolio_wrapper h3{
+    display: inline-block;
+    vertical-align: middle;
+    opacity: 1;
+    size: 1.5em;
+    color: #fff;
+}
+
+#portfolio_wrapper h3 .pr{
+    color: orange;
+}
+
+#portfolio_wrapper h3 .lec{
+    color: #6600FF;
+}
+
+#portfolio_wrapper h3 .lab{
+    color: #ED5441;
+}
+
+
+
+
+
+/*#portfolio_wrapper figure:hover h2{
     opacity: 1;
         -webkit-transition: all .8s;
     -o-transition: all .8s;
     transition: all .8s;
-}
+}*/
