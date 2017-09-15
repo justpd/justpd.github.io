@@ -181,10 +181,10 @@ wow.init();
 //};
 
 function openCharPage1(){
-    location = 'char/1.html';
+    location = 'https://vk.com/antony_bsk';
 }
 function openCharPage2(){
-    location = 'char/2.html';
+    location = 'https://vk.com/zk3359';
 }
 function openCharPage3(){
     location = 'char/3.html';
