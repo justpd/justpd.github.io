@@ -127,7 +127,7 @@ export class Board extends Container {
         //слушает клики на секторе
         for (let i = 0; i < this.arraySectors.length; i++)
         {
-            this.arraySectors[i].on('click',this.sectorClick,this);
+            this.arraySectors[i].on('pointerdown',this.sectorClick,this);
         }
     }
 

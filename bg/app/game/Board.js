@@ -105,7 +105,7 @@ define(["require", "exports", "./Chip", "./Sector", "./Sound"], function (requir
         Board.prototype.listenClick = function () {
             //слушает клики на секторе
             for (var i = 0; i < this.arraySectors.length; i++) {
-                this.arraySectors[i].on('click', this.sectorClick, this);
+                this.arraySectors[i].on('pointerdown', this.sectorClick, this);
             }
         };
         Board.prototype.sectorClick = function (data) {
