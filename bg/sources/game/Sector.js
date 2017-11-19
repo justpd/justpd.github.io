@@ -51,7 +51,7 @@ var Sector = (function (_super) {
     };
     Sector.prototype.highlightAttack = function () {
         this.yellowTrianglSprite.visible = true;
-        this.interactiveOff();
+        this.interactiveOn();
     };
     Sector.prototype.interactiveOn = function () {
         this.interactive = true;

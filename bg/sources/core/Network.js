@@ -15,30 +15,25 @@ var EventEmitter = PIXI.utils.EventEmitter;
 var Network = (function (_super) {
     __extends(Network, _super);
     function Network() {
-        var _this = _super.call(this) || this;
-        _this._oponnentEmulationIndex = 0;
-        return _this;
+        return _super.call(this) || this;
     }
     Network.prototype.getSoket = function () {
         return this._socket;
     };
-    Network.prototype.connect = function () {
-        // this._socket.onclose = (event) => this.onClose(event) ;
-        // this._socket.onmessage = (event) => this.onMessage(event);
-    };
+    // TODO Объеденить проекты
+    // Работать с сервером
+    // TODO достать протокол, сделать емиты по нему
     // TODO Сделать очередь
     // Занятость игры
     // Если игра занята сеть добавляет ответы сервера в массив (очередь)
     // По мере того как игра освобождается она говорит об этом сети и сеть отдает ответ сервера из очереди
+    // TODO Налаживать последовательность игры
     Network.prototype.send = function (data) {
         // this._socket.send(JSON.stringify(data));
         switch (data.CLASS_NAME) {
             case 'Enter':
                 this.emit(Network.EVENT_DATA, {
                     CLASS_NAME: 'GameState',
-                    // whitePositions: [ 103, 305, 2404, 2103 ],
-                    // blackPositions:[ 403, 905, 1803, 1604 ],
-                    // cubeValues: 0,
                     color: 0,
                     turn: 'Jp',
                     tableName: "Bill's table"
@@ -48,13 +43,12 @@ var Network = (function (_super) {
                         CLASS_NAME: 'GameStart',
                         enemyUserName: 'Ivan'
                     });
-                }.bind(this), 8000);
+                }.bind(this), 100);
                 break;
             case 'ThrowCube':
                 this.emit(Network.EVENT_DATA, {
                     CLASS_NAME: 'CubeValue',
-                    // cubeValues: 25
-                    cubeValues: (Math.floor(Math.random() * (6)) + 1) * 10 + Math.floor(Math.random() * (6)) + 1
+                    cubeValues: (Math.floor(Math.random() * (6)) + 1) * 10 + Math.floor(Math.random() * (6)) + 1,
                 });
                 break;
             case 'ShowPossiblePositions':
@@ -65,123 +59,30 @@ var Network = (function (_super) {
                 });
                 break;
             case 'MoveChip':
-                setTimeout(function () {
-                    this.emit(Network.EVENT_DATA, {
-                        CLASS_NAME: 'ChangeTable',
-                        oldPosition: data.oldPosition,
-                        newPosition: data.newPosition
-                    });
-                }.bind(this), 100);
+                this.emit(Network.EVENT_DATA, {
+                    CLASS_NAME: 'ChangeTable',
+                    from: data.from,
+                    to: data.to
+                });
                 break;
             case 'EndOfTurn':
-                this.emit(Network.EVENT_DATA, {
-                    CLASS_NAME: 'GameState',
-                    // whitePositions: [ 103, 305, 2404, 2103 ],
-                    // blackPositions:[ 403, 905, 1803, 1604 ],
-                    // cubeValues: 0,
-                    color: 0,
-                    turn: 'Ivan',
-                    tableName: "Bill's table"
-                });
-                switch (this._oponnentEmulationIndex) {
-                    case 0:
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'CubeValue',
-                                // cubeValues: (Math.floor(Math.random() * (6)) + 1) * 10 + Math.floor(Math.random() * (6)) + 1
-                                cubeValues: 15
-                            });
-                        }.bind(this), 3000);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'ChangeTable',
-                                oldPosition: 0,
-                                newPosition: 1
-                            });
-                        }.bind(this), 7500);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'ChangeTable',
-                                oldPosition: 0,
-                                newPosition: 5
-                            });
-                        }.bind(this), 9000);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'GameState',
-                                // whitePositions: [ 103, 305, 2404, 2103 ],
-                                // blackPositions:[ 403, 905, 1803, 1604 ],
-                                // cubeValues: 0,
-                                color: 0,
-                                turn: 'Jp',
-                                tableName: "Bill's table"
-                            });
-                        }.bind(this), 9500);
-                        this._oponnentEmulationIndex += 1;
-                        break;
-                    case 1:
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'CubeValue',
-                                // cubeValues: (Math.floor(Math.random() * (6)) + 1) * 10 + Math.floor(Math.random() * (6)) + 1
-                                cubeValues: 31
-                            });
-                        }.bind(this), 3000);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'ChangeTable',
-                                oldPosition: 1,
-                                newPosition: 5
-                            });
-                        }.bind(this), 7500);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'GameState',
-                                // whitePositions: [ 103, 305, 2404, 2103 ],
-                                // blackPositions:[ 403, 905, 1803, 1604 ],
-                                // cubeValues: 0,
-                                color: 0,
-                                turn: 'Jp',
-                                tableName: "Bill's table"
-                            });
-                        }.bind(this), 8000);
-                        this._oponnentEmulationIndex += 1;
-                        break;
-                    case 2:
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'CubeValue',
-                                // cubeValues: (Math.floor(Math.random() * (6)) + 1) * 10 + Math.floor(Math.random() * (6)) + 1
-                                cubeValues: 22
-                            });
-                        }.bind(this), 3000);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'ChangeTable',
-                                oldPosition: 5,
-                                newPosition: 9
-                            });
-                        }.bind(this), 7500);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'ChangeTable',
-                                oldPosition: 5,
-                                newPosition: 9
-                            });
-                        }.bind(this), 9000);
-                        setTimeout(function () {
-                            this.emit(Network.EVENT_DATA, {
-                                CLASS_NAME: 'GameState',
-                                // whitePositions: [ 103, 305, 2404, 2103 ],
-                                // blackPositions:[ 403, 905, 1803, 1604 ],
-                                // cubeValues: 0,
-                                color: 0,
-                                turn: 'Jp',
-                                tableName: "Bill's table"
-                            });
-                        }.bind(this), 9500);
-                        this._oponnentEmulationIndex += 1;
-                        break;
+                if (data.color == 0) {
+                    this.emit(Network.EVENT_DATA, {
+                        CLASS_NAME: 'GameState',
+                        color: 1,
+                        turn: 'Jp',
+                        tableName: "Bill's table"
+                    });
+                    console.log('Сообщение из эмулятора: ходят черные.');
+                }
+                else {
+                    this.emit(Network.EVENT_DATA, {
+                        CLASS_NAME: 'GameState',
+                        color: 0,
+                        turn: 'Jp',
+                        tableName: "Bill's table"
+                    });
+                    console.log('Сообщение из эмулятора: ходят белые.');
                 }
                 break;
         }
@@ -201,14 +102,6 @@ var Network = (function (_super) {
         this._socket.addEventListener('open', this.onOpen.bind(this));
         this.emit(Network.EVENT_CONNECTED);
     };
-    // public moveChips():void
-    // {
-    //     // запрашиваем разрешение на сдвиг фишки.
-    //     this.send({
-    //         CLASS_NAME: 'MoveChip',
-    //         Positions: 306
-    //     })
-    // }
     Network.prototype.onError = function (event) {
         this.emit(Network.EVENT_ERROR);
         // console.log(event.target.readyState);

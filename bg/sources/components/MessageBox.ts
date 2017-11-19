@@ -22,7 +22,7 @@ export class MessageBox extends Container
         image.x = Game.WIDTH/2;
         image.y = Game.HEIGHT/2;
         this.addChild(image);
-        TweenLite.set(this, {x: 2 * Game.WIDTH});
+        TweenLite.set(this, {alpha :0});
     }
 
     public show(message:string, duration:number, styleMsg:TextStyle):void
@@ -44,6 +44,7 @@ export class MessageBox extends Container
     protected popUp()
     {
         TweenLite.set(this, {x: 0, y: 0});
+        TweenLite.to(this, 1, {alpha: 1})
     }
 
     protected popOut()

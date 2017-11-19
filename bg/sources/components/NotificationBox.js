@@ -24,17 +24,17 @@ var NotificationBox = (function (_super) {
     NotificationBox.prototype.configure = function () {
         var image = Sprite.fromImage('assets/ntf.png');
         image.anchor.set(0.5, 0);
-        image.scale.set(1);
-        image.x = Game_1.Game.WIDTH / 2;
+        image.scale.set(0.8);
+        image.x = 0;
         image.y = 0;
         this.addChild(image);
-        TweenLite.set(this, { alpha: 0 });
+        TweenLite.set(this, { x: 2 * Game_1.Game.WIDTH });
     };
     NotificationBox.prototype.show = function (message, duration, styleMsg) {
         var textMsg = new PIXI.Text(message);
         textMsg.style = styleMsg;
-        textMsg.anchor.set(0.5, 0);
-        textMsg.position.set(Game_1.Game.WIDTH / 2, 0);
+        textMsg.anchor.set(0.5, 0.5);
+        textMsg.position.set(0, 62);
         this.addChild(textMsg);
         this.popUp();
         setTimeout(function () {
@@ -46,7 +46,6 @@ var NotificationBox = (function (_super) {
     };
     NotificationBox.prototype.popUp = function () {
         TweenLite.set(this, { x: Game_1.Game.WIDTH / 2, y: 0 });
-        TweenLite.to(this, 1, { alpha: 1 });
     };
     NotificationBox.prototype.popOut = function () {
         TweenLite.to(this, 1, { y: -300 });

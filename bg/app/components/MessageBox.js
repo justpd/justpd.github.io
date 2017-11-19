@@ -28,7 +28,7 @@ define(["require", "exports", "../Game"], function (require, exports, Game_1) {
             image.x = Game_1.Game.WIDTH / 2;
             image.y = Game_1.Game.HEIGHT / 2;
             this.addChild(image);
-            TweenLite.set(this, { x: 2 * Game_1.Game.WIDTH });
+            TweenLite.set(this, { alpha: 0 });
         };
         MessageBox.prototype.show = function (message, duration, styleMsg) {
             var textMsg = new PIXI.Text(message);
@@ -46,6 +46,7 @@ define(["require", "exports", "../Game"], function (require, exports, Game_1) {
         };
         MessageBox.prototype.popUp = function () {
             TweenLite.set(this, { x: 0, y: 0 });
+            TweenLite.to(this, 1, { alpha: 1 });
         };
         MessageBox.prototype.popOut = function () {
             TweenLite.to(this, 1, { x: 2 * Game_1.Game.WIDTH });
