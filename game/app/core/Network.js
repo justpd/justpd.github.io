@@ -1,4 +1,3 @@
-///<reference path="../../dts/pixi.js.d.ts"/>
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -15,25 +14,36 @@ define(["require", "exports"], function (require, exports) {
     var EventEmitter = PIXI.utils.EventEmitter;
     var Network = (function (_super) {
         __extends(Network, _super);
+        // Init >>--------------------------------------------------------------<<<<
+        /**
+         * @private
+         */
         function Network() {
             var _this = _super.call(this) || this;
             _this._queue = [];
-            _this._emulating = true;
-            _this._debug = true;
+            // Debug Params >>------------------------------------------------------------<<<<
+            _this._emulating = false;
+            _this._debug = false;
             _this._opponentEmulationIndex = 0;
             _this.on(Network.EVENT_GAME_IS_WAITING, _this.popData);
             _this.on(Network.EVENT_GAME_IS_BUSY, _this.storeData);
             return _this;
         }
+        // Base >>--------------------------------------------------------------<<<<
         Network.prototype.getSocket = function () {
             return this._socket;
         };
-        // TODO Сделать очередь
-        // Занятость игры
-        // Если игра занята сеть добавляет ответы сервера в массив (очередь)
-        // По мере того как игра освобождается она говорит об этом сети и сеть отдает ответ сервера из очереди
+        Network.prototype.openConnection = function (url) {
+            // подключение
+            this._socket = new WebSocket(url);
+            this._socket.addEventListener('close', this.onClose.bind(this));
+            this._socket.addEventListener('message', this.onMessage.bind(this));
+            this._socket.addEventListener('error', this.onError.bind(this));
+            this._socket.addEventListener('open', this.onOpen.bind(this));
+        };
         Network.prototype.send = function (data) {
-            // this._socket.send(JSON.stringify(data));
+            console.log(JSON.stringify(data));
+            this._socket.send(JSON.stringify(data));
             if (this._emulating) {
                 switch (data.CLASS_NAME) {
                     case 'Enter':
@@ -170,29 +180,19 @@ define(["require", "exports"], function (require, exports) {
                 }
             }
         };
-        Network.prototype.enter = function () {
-            // Посылаем Enter, на него приходит ГС.
-            this.send({
-                CLASS_NAME: 'Enter',
-                myUserName: 'Jp'
-            });
+        Network.prototype.disconnect = function (event) {
+            this._socket.close();
+            console.log(event);
+            this.emit(Network.EVENT_DISCONNECTED);
         };
-        Network.prototype.openConnection = function (url) {
-            // подключение
-            // this._socket = new WebSocket(url);
-            // this._socket.addEventListener('close', this.onClose.bind(this));
-            // this._socket.addEventListener('message', this.onMessage.bind(this));
-            // this._socket.addEventListener('error', this.onError.bind(this));
-            // this._socket.addEventListener('open', this.onOpen.bind(this));
-            this.emit(Network.EVENT_CONNECTED);
-        };
+        // Events >>------------------------------------------------------------<<<<
         Network.prototype.onError = function (event) {
             this.emit(Network.EVENT_ERROR);
-            // console.log(event.target.readyState);
+            this.disconnect(event);
         };
         Network.prototype.onOpen = function () {
             console.log('Connection succeed.');
-            // this.emit(Network.EVENT_CONNECTED);
+            this.emit(Network.EVENT_CONNECTED);
         };
         Network.prototype.onClose = function (event) {
             if (event.wasClean) {
@@ -210,12 +210,14 @@ define(["require", "exports"], function (require, exports) {
             // console.log('Код: ' + event.code + ' причина: ' + event.reason);
         };
         Network.prototype.onMessage = function (event) {
-            console.log("Data from server: ", event.data);
+            var data = JSON.parse(event.data);
             if (this._gameIsBusy) {
-                this._queue.push(event.data);
+                this._queue.push(data);
+                console.log(this._queue);
             }
             else {
-                this.emit(Network.EVENT_DATA, event.data);
+                this.emit(Network.EVENT_DATA, data);
+                console.log(data);
             }
         };
         Network.prototype.storeData = function () {
@@ -225,10 +227,7 @@ define(["require", "exports"], function (require, exports) {
             this._gameIsBusy = false;
             this.emit(Network.EVENT_DATA, this._queue.shift());
         };
-        Network.prototype.disconnect = function () {
-            this._socket.close();
-            this.emit(Network.EVENT_DISCONNECTED);
-        };
+        // Params >>------------------------------------------------------------<<<<
         Network.EVENT_CONNECTED = 'Connected';
         Network.EVENT_DISCONNECTED = 'Disconnected';
         Network.EVENT_DATA = 'Data';

@@ -28,7 +28,7 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
         function Game() {
             var _this = _super.call(this) || this;
             _this._myTurn = true;
-            _this._myName = 'Jp';
+            _this._myName = 'id' + Math.floor(Math.random() * (10000000000000));
             _this.configure();
             return _this;
         }
@@ -37,9 +37,10 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
             this.set_logo();
             // Menu screen >>---------------------------------------------------<<<<
             this.set_menu();
-            this._throwBtn = new Button_1.Button('DiceRoll', 'throw', 2000);
+            this._throwBtn = new Button_1.Button('DiceRoll', 'diceRoll', 2000);
             this._throwBtn.on('DiceRoll', this.requestCubes, this);
             this._dices = new Dices_1.Dices();
+            this._throwBtn.scale.set(0.8);
             this._dices.position.set(Game.WIDTH / 2, Game.HEIGHT / 2);
             this._board = new Board_1.Board();
             this._msgBox = new MessageBox_1.MessageBox();
@@ -49,84 +50,11 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
             this._network.on(Network_1.Network.EVENT_DISCONNECTED, this.eventDisconnected, this);
             this._network.on(Network_1.Network.EVENT_DATA, this.eventData, this);
             this._board.on(Board_1.Board.EVENT_END_OF_TURN, this.endTurn, this);
-            this._board.on(Board_1.Board.EVENT_MOVE_CHIP, this.moveChip, this);
+            this._board.on(Board_1.Board.EVENT_MOVE_CHIP, this.moveAction, this);
+            // this._board.on(Board.EVENT_MOVE_CHIP_JAIL, this.moveAction, this);
             // this.addChild(this._board);
             this.addChild(this._msgBox);
             this.addChild(this._ntfBox);
-        };
-        Game.prototype.eventData = function (data) {
-            switch (data.CLASS_NAME) {
-                // TODO Сделать отдельные функции
-                case 'GameState':
-                    console.log('Сообщение из гейма: GameState пришел.');
-                    if (!this._myTurn && data.turn == this._myName) {
-                        this._myColor = data.color;
-                        this._myTurn = data.turn == this._myName;
-                        this.startOfTurn();
-                    }
-                    else {
-                        this._myColor = data.color;
-                    }
-                    break;
-                case 'GameStart':
-                    console.log('Сообщение из гейма: Your opponent is: ' + data.enemyUserName);
-                    this.gameStart();
-                    break;
-                case 'CubeValue':
-                    var first = (data.cubeValues - data.cubeValues % 10) / 10;
-                    var second = data.cubeValues % 10;
-                    console.log('Сообщение из гейма: Values from server: ', first + ', ', second);
-                    this.throwCubes(first, second);
-                    break;
-                case 'PossiblePositions':
-                    console.log('Сообщение из гейма: Possible positions: ' + data.possiblePositions);
-                    break;
-                case 'ChangeTable':
-                    console.log('Сообщение из гейма: Move accepted.');
-                    if (this._myTurn)
-                        this._board.moveChip(data.from, data.to);
-                    else
-                        this._board.moveOpponentChip(data.from, data.to);
-                    break;
-            }
-        };
-        Game.prototype.startOfTurn = function () {
-            console.log('Сообщение из гейма: Текущий цвет на начало хода - ', this._myColor);
-            this._dices.hide();
-            if (this._myColor == 0) {
-                this._throwBtn.position.set(Game.WIDTH / 2 + 225, Game.HEIGHT / 2);
-                this._dices.position.set(Game.WIDTH / 2 + 225, Game.HEIGHT / 2);
-                // this.showNotification('White\'s turn');
-            }
-            else {
-                this._throwBtn.position.set(Game.WIDTH / 2 - 225, Game.HEIGHT / 2);
-                this._dices.position.set(Game.WIDTH / 2 - 225, Game.HEIGHT / 2);
-                // this.showNotification('Black\'s turn');
-            }
-            this._throwBtn.show();
-        };
-        Game.prototype.moveChip = function (data) {
-            console.log('Сообщение из гейма: MoveChip пришел {from: ' + data.from + ',to: ' + data.to + '}.');
-            this._network.send(data);
-        };
-        Game.prototype.endTurn = function () {
-            console.log('Сообщение из гейма: EndOfTurn пришел.');
-            this._dices.hide();
-            this._myTurn = false;
-            this._throwBtn.position.set(Game.WIDTH / 2 - 225, Game.HEIGHT / 2);
-            this._dices.position.set(Game.WIDTH / 2 - 225, Game.HEIGHT / 2);
-            this._network.send({
-                CLASS_NAME: 'EndOfTurn',
-                color: this._myColor
-            });
-        };
-        Game.prototype.eventDisconnected = function () {
-            console.log('Сообщение из гейма: Disconnected from server.');
-        };
-        Game.prototype.eventConnected = function () {
-            console.log('Сообщение из гейма: Sending enter request...');
-            this._network.enter();
-            this.loadGame();
         };
         // Base >>--------------------------------------------------------------<<<<
         Game.prototype.set_logo = function () {
@@ -134,8 +62,8 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
             bg.width = Game.WIDTH;
             bg.height = Game.HEIGHT;
             bg.alpha = 0.5;
-            var logo = Sprite.fromImage('assets/logo.png');
             this.addChild(bg);
+            // let logo:Sprite = Sprite.fromImage('assets/logo.png');
             // this.addChild(logo);
             //
             // logo.anchor.set(0.5);
@@ -150,31 +78,22 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
             this._startBtn.position.set(Game.WIDTH / 2, Game.HEIGHT / 2);
             this.addChild(this._startBtn);
         };
-        Game.prototype.openConnection = function () {
-            console.log('Сообщение из гейма: Connecting to server...');
-            this._network.openConnection('ws://localhost:8888/ws');
-        };
-        Game.prototype.requestCubes = function () {
-            console.log('Сообщение из гейма: Requesting values from server...');
-            this._network.send({
-                CLASS_NAME: 'ThrowCube'
-            });
-        };
-        Game.prototype.requestPossiblePositions = function () {
-            this._network.send({
-                CLASS_NAME: 'ShowPossiblePositions'
-            });
-        };
-        // Events >>------------------------------------------------------------<<<<
         Game.prototype.loadGame = function () {
             this.removeChild(this._startBtn);
             // this._board.show();
             this.addChild(this._board);
-            // this.showMessage('Waiting for\n opponent..', 100, 0);
+            this.showMessage('Waiting for\n opponent..', 0, 0);
             this.addChild(this._dices);
             this.addChild(this._throwBtn);
             this._throwBtn.hide();
             this._dices.hide();
+        };
+        Game.prototype.gameStart = function () {
+            this.startOfTurn();
+        };
+        Game.prototype.openConnection = function () {
+            console.log('Сообщение из гейма: Connecting to server...');
+            this._network.openConnection('ws://backgammon.connectivegames.com:8888/ws');
         };
         Game.prototype.showNotification = function (text) {
             var style = new TextStyle({ fill: '#ffffff', fontSize: 28, fontWeight: '800', dropShadow: true, align: 'center' });
@@ -186,8 +105,190 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
             this.addChild(this._msgBox);
             setTimeout(this._msgBox.show.bind(this._msgBox, text, duration, redStyle), timeout);
         };
-        Game.prototype.gameStart = function () {
-            this.startOfTurn();
+        // Events >>------------------------------------------------------------<<<<
+        Game.prototype.eventConnected = function () {
+            console.log('Сообщение из гейма: Sending enter request...');
+            this._network.send({
+                CLASS_NAME: 'Enter'
+            });
+            this.loadGame();
+        };
+        Game.prototype.eventDisconnected = function () {
+            console.log('Сообщение из гейма: Disconnected from server.');
+            this.showNotification('Con-n er-r');
+        };
+        Game.prototype.eventData = function (data) {
+            // TODO сделать map
+            switch (data.CLASS_NAME) {
+                case 'GameState':
+                    this.dataOnGameState(data);
+                    break;
+                case 'GameStart':
+                    this.dataOnGameStart(data);
+                    break;
+                case 'CubeValue':
+                    this.dataOnCubeValue(data);
+                    break;
+                case 'ChangeTable':
+                    this.dataOnChangeTable(data);
+                    break;
+                case 'ErrorMessage':
+                    this.dataOnError(data);
+                    break;
+                case 'PackageMessage':
+                    this.dataOnMessage(data);
+            }
+        };
+        Game.prototype.eventSuccessfulThrow = function (data) {
+            if (this._myTurn) {
+                if (data.first == data.second)
+                    this.showNotification('OMG !');
+                if (this._myColor == 'w')
+                    this._board.startTurn(data.first, data.second, 0);
+                else
+                    this._board.startTurn(data.first, data.second, 1);
+            }
+        };
+        // Data (server)  >>------------------------------------------------------------<<<<
+        Game.prototype.dataOnMessage = function (data) {
+            if (data.gameState) {
+                console.log('Msg: GameState. Color: ' + data.gameState.color);
+                this._myName = data.gameState.myName;
+                this._myTurn = data.gameState.stateChange.activePlayerName == this._myName;
+                this._myColor = data.gameState.color;
+                // let drawState: any = new Array(24);
+                //
+                // for (let i = 0; i < 24; i++)
+                // {
+                //     drawState[i] = [];
+                // }
+                //
+                // data.gameState.whitePositions.forEach(function (sector:any)
+                // {
+                //     for (let i=0; i < sector.quantity;i++)
+                //     {
+                //         drawState[sector.position-1].push(0);
+                //     }
+                // });
+                // data.gameState.blackPositions.forEach(function (sector:any)
+                // {
+                //     for (let i=0; i < sector.quantity;i++)
+                //     {
+                //         drawState[sector.position-1].push(1);
+                //     }
+                // });
+                //
+                // console.log(drawState);
+                // this._board.setState(drawState);
+                if (this._myTurn) {
+                    if (this._opponent) {
+                        this.startOfTurn();
+                    }
+                    console.log('MyTurn, color: ' + this._myColor);
+                }
+                else {
+                    console.log('NotMyTurn, color: ' + this._myColor);
+                }
+                this.moveDice(this._myTurn);
+            }
+            if (data.changeArrayList) {
+                console.log('Msg: ChangeArrayList.');
+                for (var i = 0; i < data.changeArrayList.length; i++) {
+                    if (data.changeArrayList[i].CLASS_NAME == 'GameStart') {
+                        this._opponent = data.changeArrayList[i].enemyUserName;
+                        if (this._myTurn) {
+                            this.startOfTurn();
+                        }
+                        console.log('Opponent is: ' + this._opponent);
+                    }
+                    else if (data.changeArrayList[i].CLASS_NAME == "CubeValue") {
+                        var first = (data.changeArrayList[i].cubeValues - data.changeArrayList[i].cubeValues % 10) / 10;
+                        var second = data.changeArrayList[i].cubeValues % 10;
+                        console.log('Сообщение из гейма: Values from server: ', first + ', ', second);
+                        this.throwCubes(first, second);
+                    }
+                    else if (data.changeArrayList[i].CLASS_NAME == 'PossibleMoves' && data.changeArrayList.length < 3) {
+                        console.log('Сообщение из гейма: Move  {from: ' + this._lastMove[0] + ',to: ' + this._lastMove[1] + '}.');
+                        this._board.moveChip(this._lastMove[0], this._lastMove[1]);
+                        this._lastMove[0] = null;
+                        this._lastMove[1] = null;
+                    }
+                    else if (data.changeArrayList[i].CLASS_NAME == 'Move') {
+                        console.log('Сообщение из гейма: Move  {from: ' + data.changeArrayList[i].from + ',to: ' + data.changeArrayList[i].to + '}.');
+                        this._board.moveOpponentChip(data.changeArrayList[i].from, data.changeArrayList[i].to);
+                    }
+                    else if (data.changeArrayList.length == 1 && data.changeArrayList[0].CLASS_NAME == 'StateChange') {
+                        if (this._lastMove[0]) {
+                            console.log('Сообщение из гейма: Move  {from: ' + this._lastMove[0] + ',to: ' + this._lastMove[1] + '}.');
+                            this._board.moveChip(this._lastMove[0], this._lastMove[1]);
+                        }
+                    }
+                }
+                if (data.changeArrayList.length == 2 && data.changeArrayList[0] && data.changeArrayList[0].CLASS_NAME == 'StateChange') {
+                    this._myTurn = data.changeArrayList[0].activePlayerName == this._myName;
+                    if (this._myTurn) {
+                        this.startOfTurn();
+                    }
+                    this.moveDice(this._myTurn);
+                }
+            }
+        };
+        Game.prototype.dataOnError = function (data) {
+            this.showNotification(data.message);
+        };
+        // Data (emulating) >>------------------------------------------------------------<<<<
+        Game.prototype.dataOnGameState = function (data) {
+            console.log('Сообщение из гейма: GameState пришел.');
+            if (!this._myTurn && data.turn == this._myName) {
+                this._myColor = data.color;
+                this._myTurn = data.turn == this._myName;
+                this.startOfTurn();
+            }
+            else {
+                this._myColor = data.color;
+            }
+        };
+        Game.prototype.dataOnGameStart = function (data) {
+            console.log('Сообщение из гейма: Your opponent is: ' + data.enemyUserName);
+            this.gameStart();
+        };
+        Game.prototype.dataOnCubeValue = function (data) {
+            var first = (data.cubeValues - data.cubeValues % 10) / 10;
+            var second = data.cubeValues % 10;
+            console.log('Сообщение из гейма: Values from server: ', first + ', ', second);
+            this.throwCubes(first, second);
+        };
+        Game.prototype.dataOnChangeTable = function (data) {
+            console.log('Сообщение из гейма: Move accepted.');
+            if (this._myTurn)
+                this._board.moveChip(data.from, data.to);
+            else
+                this._board.moveOpponentChip(data.from, data.to);
+        };
+        // Game cycle >>------------------------------------------------------------<<<<
+        Game.prototype.requestCubes = function () {
+            console.log('Сообщение из гейма: Requesting values from server...');
+            this._network.send({
+                CLASS_NAME: 'ThrowCube'
+            });
+        };
+        Game.prototype.moveDice = function (myTurn) {
+            if (myTurn) {
+                this._dices.position.set(Game.WIDTH / 2 + 185, Game.HEIGHT / 2 + 15);
+                this._throwBtn.position.set(Game.WIDTH - 70, Game.HEIGHT / 2);
+                // this.showNotification('White\'s turn');
+            }
+            else {
+                this._dices.position.set(Game.WIDTH / 2 - 170, Game.HEIGHT / 2 + 15);
+                this._throwBtn.position.set(75, Game.HEIGHT / 2);
+                // this.showNotification('Black\'s turn');
+            }
+        };
+        Game.prototype.startOfTurn = function () {
+            console.log('Сообщение из гейма: Текущий цвет на начало хода - ', this._myColor);
+            this.moveDice(this._myTurn);
+            this._dices.hide();
+            this._throwBtn.show();
         };
         Game.prototype.throwCubes = function (first, second) {
             this._throwBtn.hide();
@@ -195,12 +296,32 @@ define(["require", "exports", "./components/Button", "./game/Board", "./componen
             this._dices.throwDice(first, second);
             this._dices.on('SuccessfulThrow', this.eventSuccessfulThrow, this);
         };
-        Game.prototype.eventSuccessfulThrow = function (data) {
-            if (this._myTurn) {
-                if (data.first == data.second)
-                    this.showNotification('OMG !');
-                this._board.startTurn(data.first, data.second, this._myColor);
-            }
+        Game.prototype.moveAction = function (data) {
+            this._network.send({
+                CLASS_NAME: 'MoveAction',
+                from: data.from,
+                to: data.to,
+                cantMove: false,
+                cubeValue: Math.abs(data.from - data.to)
+            });
+            this._lastMove = [data.from, data.to];
+        };
+        Game.prototype.moveJailAction = function (data) {
+            this._network.send({
+                CLASS_NAME: 'MoveAction',
+                from: data.from,
+                to: data.to,
+                cantMove: false,
+                cubeValue: Math.abs(data.from - data.to)
+            });
+            this._lastMove = [data.from, data.to];
+        };
+        Game.prototype.endTurn = function () {
+            console.log('Сообщение из гейма: EndOfTurn пришел.');
+            this._dices.hide();
+            this._myTurn = false;
+            this._throwBtn.position.set(Game.WIDTH / 2 - 225, Game.HEIGHT / 2);
+            this._dices.position.set(Game.WIDTH / 2 - 225, Game.HEIGHT / 2);
         };
         // Params >>------------------------------------------------------------<<<<
         Game.WIDTH = 1024;

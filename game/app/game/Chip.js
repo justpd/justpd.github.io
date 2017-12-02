@@ -11,36 +11,80 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var Container = PIXI.Container;
-    var Sprite = PIXI.Sprite;
-    var Texture = PIXI.Texture;
+    var Sprite2d = PIXI.projection.Sprite2d;
     var Chip = (function (_super) {
         __extends(Chip, _super);
-        function Chip(color_white) {
-            var _this = _super.call(this) || this;
-            _this.chipSprite = new Sprite(PIXI.Texture.WHITE);
-            _this.chipSkinWhite = Texture.fromImage('assets/white.png');
-            _this.chipSkinWhite_active = Texture.fromImage('assets/white_active.png');
-            _this.chipSkinBlack = Texture.fromImage('assets/black.png');
-            _this.chipSkinBlack_active = Texture.fromImage('assets/black_active.png');
-            _this.colorChipWhite = color_white;
-            _this.blackOrWhite();
-            _this.chipSprite.anchor.set(0.5);
-            _this.chipSprite.width = 60; //Game.WIDTH/15;
-            _this.chipSprite.height = 60; //Game.HEIGHT/15;
-            _this.selectNow = false;
-            _this.addChild(_this.chipSprite);
+        function Chip(color) {
+            var _this = _super.call(this, color == Chip.COLOR_WHITE ? Chip.TEXTURE_WHITE_NORMAL : Chip.TEXTURE_BLACK_NORMAL) || this;
+            _this._selected = false;
+            _this._color = color;
+            _this.anchor.set(0.5);
+            _this.scale.set(0.6);
+            _this.proj.affine = PIXI.projection.AFFINE.AXIS_X;
             return _this;
         }
-        Chip.prototype.blackOrWhite = function () {
-            if (this.colorChipWhite) {
-                this.chipSprite.texture = this.chipSkinWhite;
+        Object.defineProperty(Chip.prototype, "color", {
+            get: function () {
+                return this._color;
+            },
+            set: function (value) {
+                if (this._color != value) {
+                    this._color = value;
+                    this.drawState();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Chip.prototype, "selected", {
+            get: function () {
+                return this._selected;
+            },
+            set: function (value) {
+                if (this._selected != value) {
+                    this._selected = value;
+                    this.drawState();
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Chip.prototype.drawState = function () {
+            var temp;
+            switch (this._color) {
+                case Chip.COLOR_BLACK:
+                    temp = this._selected ? Chip.TEXTURE_BLACK_SELECTED : Chip.TEXTURE_BLACK_NORMAL;
+                    break;
+                case Chip.COLOR_WHITE:
+                    temp = this._selected ? Chip.TEXTURE_WHITE_SELECTED : Chip.TEXTURE_WHITE_NORMAL;
+                    break;
             }
-            else
-                this.chipSprite.texture = this.chipSkinBlack;
+            this.texture = temp;
         };
+        Chip.prototype.chipExit = function () {
+            var temp;
+            switch (this._color) {
+                case Chip.COLOR_BLACK:
+                    temp = Chip.TEXTURE_EXIT_BLACK;
+                    break;
+                case Chip.COLOR_WHITE:
+                    temp = Chip.TEXTURE_EXIT_WHITE;
+                    break;
+            }
+            this.texture = temp;
+            this.scale.set(0.6, 0.6);
+            this.rotation = -3.14;
+        };
+        Chip.COLOR_BLACK = "black";
+        Chip.COLOR_WHITE = "white";
+        Chip.TEXTURE_WHITE_NORMAL = PIXI.Texture.fromImage('assets/chipWhite.png');
+        Chip.TEXTURE_WHITE_SELECTED = PIXI.Texture.fromImage('assets/whiteActivChip.png');
+        Chip.TEXTURE_BLACK_NORMAL = PIXI.Texture.fromImage('assets/chipBlack.png');
+        Chip.TEXTURE_BLACK_SELECTED = PIXI.Texture.fromImage('assets/blackActivChip.png');
+        Chip.TEXTURE_EXIT_WHITE = PIXI.Texture.fromImage('assets/exitWhite.png');
+        Chip.TEXTURE_EXIT_BLACK = PIXI.Texture.fromImage('assets/exitBlack.png');
         return Chip;
-    }(Container));
+    }(Sprite2d));
     exports.Chip = Chip;
 });
 //# sourceMappingURL=Chip.js.map

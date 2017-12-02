@@ -11,7 +11,6 @@ var __extends = (this && this.__extends) || (function () {
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    ///<reference path="../../dts/pixi.js.d.ts"/>
     var Container = PIXI.Container;
     var Sprite = PIXI.Sprite;
     var Button = (function (_super) {

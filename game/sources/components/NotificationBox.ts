@@ -1,5 +1,3 @@
-///<reference path="../../dts/pixi.js.d.ts"/>
-
 import Container = PIXI.Container;
 import Sprite = PIXI.Sprite;
 import {Game} from "../Game";

@@ -3,7 +3,5 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="TweenLite" level="project" />
-    <orderEntry type="library" name="soundjs-0.6.2" level="project" />
   </component>
 </module>
