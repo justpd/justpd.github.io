@@ -53,9 +53,9 @@ define(["require", "exports", "./Rocket", "./Level", "./Ball", "./UserBar"], fun
             createjs.Sound.registerSound({ src: "assets/pong.wav", id: "pong" });
             createjs.Sound.registerSound({ src: "assets/ballOut.wav", id: "ballOut" });
             createjs.Sound.registerSound({ src: "assets/loop.wav", id: "loop" });
-            var bg = Sprite.fromImage('assets/bg.png');
+            this._bgImage = Sprite.fromImage('assets/bg.png');
             var border = Sprite.fromImage('assets/border.png');
-            this.addChild(bg);
+            this.addChild(this._bgImage);
             this.addChild(border);
             this.addChild(this._ball);
             this.addChild(this._rocket);
@@ -72,15 +72,15 @@ define(["require", "exports", "./Rocket", "./Level", "./Ball", "./UserBar"], fun
         Game.prototype.eventPointerDown = function (event) {
             console.log(event);
             var mouseX = event.data.originalEvent.clientX;
-            var width = event.data.originalEvent.x;
-            console.log(mouseX, width / 3);
-            if (mouseX <= width / 3) {
+            var width = event.data.originalEvent.target.width;
+            console.log(mouseX, width);
+            if (mouseX <= width / 2 - 128) {
                 this._rocket.velocity = -1;
             }
-            if (mouseX >= 2 * width / 3) {
+            if (mouseX >= width / 2 + 128) {
                 this._rocket.velocity = 1;
             }
-            else if (mouseX < 2 * width / 3 && this._ball.onTheRocket) {
+            else if (mouseX < width / 2 + 128 && mouseX > width / 2 - 128 && this._ball.onTheRocket) {
                 this._ball.push();
                 this._userBar.message.text = '';
             }
