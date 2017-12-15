@@ -70,8 +70,9 @@ define(["require", "exports", "./Rocket", "./Level", "./Ball", "./UserBar"], fun
             createjs.Sound.play('loop', createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 0.2);
         };
         Game.prototype.eventPointerDown = function (event) {
+            console.log(event);
             var mouseX = event.data.originalEvent.clientX;
-            var width = event.data.originalEvent.explicitOriginalTarget.clientWidth;
+            var width = event.data.originalEvent.x;
             console.log(mouseX, width / 3);
             if (mouseX <= width / 3) {
                 this._rocket.velocity = -1;
