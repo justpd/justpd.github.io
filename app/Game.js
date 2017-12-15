@@ -71,7 +71,7 @@ define(["require", "exports", "./Rocket", "./Level", "./Ball", "./UserBar"], fun
         };
         Game.prototype.eventPointerDown = function (event) {
             console.log(event);
-            var mouseX = event.data.originalEvent.clientX;
+            var mouseX = event.data.global.x;
             var width = event.data.originalEvent.target.width;
             console.log(mouseX, width);
             if (mouseX <= width / 2 - 128) {

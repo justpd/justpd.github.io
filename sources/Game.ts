@@ -82,7 +82,7 @@ export class Game extends Container
     protected eventPointerDown(event: any)
     {
         console.log(event);
-        let mouseX = event.data.originalEvent.clientX;
+        let mouseX = event.data.global.x;
         let width = event.data.originalEvent.target.width;
 
         console.log(mouseX, width);
