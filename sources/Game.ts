@@ -9,6 +9,8 @@ import {Rocket} from "./Rocket";
 import {Level} from "./Level";
 import {Ball} from "./Ball";
 import {UserBar} from "./UserBar";
+import {Button} from "./Button";
+import {Menu} from "./Menu";
 
 export class Game extends Container
 {
@@ -16,18 +18,28 @@ export class Game extends Container
 
     public static WIDTH:number = 512;
     public static HEIGHT:number = 512;
+    public static EVENT_GAME_PAUSE = 'GamePause';
+    public static EVENT_GAME_ACTION = 'GameAction';
+    public static EVENT_GAME_SOUND = 'GameSound';
+    public static EVENT_GAME_CHEAT = 'GameCheat';
 
+    private _bgImage: Sprite;
+    private _borderImage: Sprite;
     private _rocket: Rocket;
     private _level: Level;
     private _ball: Ball;
     private _userBar: UserBar;
+    private _pauseButton: Button;
+    private _actionButton: Button;
+    private _soundButton: Button;
+    private _cheatButton: Button;
+    private _menu: Menu;
     private _score: number = 0;
     private _lives: number = 3;
     private _stage: number = 1;
     private _cheatMode: boolean = false;
     private _pause: boolean = false;
     private _music: boolean = true;
-    private _bgImage: Sprite;
     // Init >>--------------------------------------------------------------<<<<
 
     /**
@@ -36,17 +48,29 @@ export class Game extends Container
     constructor()
     {
         super();
+        this._bgImage = Sprite.fromImage('assets/bg.png');
+        this._menu = new Menu();
         this._rocket = new Rocket();
         this._level = new Level();
         this._ball = new Ball();
         this._userBar = new UserBar();
-        this.interactive = true;
-        this.on('pointerdown', this.eventPointerDown, this);
-        this.on('pointerup', this.eventPointerUp, this);
+        this._pauseButton = new Button(Game.EVENT_GAME_PAUSE, 'Pause', 100, 1, 0);
+        this._pauseButton.on(Game.EVENT_GAME_PAUSE, this.gamePause, this);
+        this._actionButton = new Button(Game.EVENT_GAME_ACTION, 'Action', 100, 0, 0);
+        this._actionButton.on(Game.EVENT_GAME_ACTION, this.gameAction, this);
+        this._soundButton = new Button(Game.EVENT_GAME_SOUND, 'Sound', 100, 0.5, 0);
+        this._soundButton.on(Game.EVENT_GAME_SOUND, this.gameSound, this);
+        this._cheatButton = new Button(Game.EVENT_GAME_CHEAT, 'Cheat', 100, 0.5, 0);
+        this._cheatButton.on(Game.EVENT_GAME_CHEAT, this.gameCheat, this);
+        this._menu.on('pointerup', this.menuHide, this);
+
         this._level.on('Collision', this.eventCollision, this);
         this._level.on('NextLevel', this.nextStage, this);
         this._level.on('PowerUp', this.eventPowerUp, this);
         this._ball.on('BallOut', this.eventBallOut, this);
+        this.interactive = true;
+        this.on('pointerdown', this.eventPointerDown, this);
+        this.on('pointerup', this.eventPointerUp, this);
         setInterval(this.Update.bind(this), 1000/60);
         this.configurate();
     }
@@ -59,19 +83,17 @@ export class Game extends Container
         createjs.Sound.registerSound({src:"assets/ballOut.wav", id:"ballOut"});
         createjs.Sound.registerSound({src:"assets/loop.wav", id:"loop"});
 
-        this._bgImage = Sprite.fromImage('assets/bg.png');
-        let border:Sprite = Sprite.fromImage('assets/border.png');
-        this.addChild(this._bgImage);
-        this.addChild(border);
-        this.addChild(this._ball);
-        this.addChild(this._rocket);
-        this.addChild(this._level);
-        this.addChild(this._userBar);
+         this._borderImage = Sprite.fromImage('assets/border.png');
 
-        this._userBar.lives.text = 'Lives: ' + this._lives;
-        this._userBar.score.text = 'Score: ' + this._score;
-        this._userBar.stage.text = 'Stage: ' + this._stage;
-        this._userBar.message.text = 'Press Z to start!';
+        this._pauseButton.position.set(Game.WIDTH - 4, 96);
+        this._actionButton.position.set(3, 96);
+        this._soundButton.position.set(Game.WIDTH/2 - 114, 56);
+        this._cheatButton.position.set(Game.WIDTH/2 + 114, 56);
+        this.addChild(this._menu);
+        this._userBar.lives.text = 'LIVES: ' + this._lives;
+        this._userBar.score.text = 'SCORE: ' + this._score;
+        this._userBar.stage.text = 'STAGE: ' + this._stage;
+        this._userBar.message.text = 'PRESS Z BUTTON TO START!';
     }
 
     protected loadHandler()
@@ -79,25 +101,68 @@ export class Game extends Container
         createjs.Sound.play('loop', createjs.Sound.INTERRUPT_ANY, 0, 0, -1, 0.2);
     }
 
+    protected menuHide()
+    {
+        this.removeChild(this._menu);
+        this.addChild(this._bgImage);
+        this.addChild(this._ball);
+        this.addChild(this._rocket);
+        this.addChild(this._level);
+        this.addChild(this._borderImage);
+        this.addChild(this._userBar);
+        this.addChild(this._pauseButton);
+        this.addChild(this._actionButton);
+        this.addChild(this._soundButton);
+        this.addChild(this._cheatButton);
+    }
+
+    protected gamePause()
+    {
+        this._pause = !this._pause;
+        if (this._pause)
+            this._userBar.message.text = 'GAME PAUSED!';
+        else
+            this._userBar.message.text = '';
+    }
+
+    protected gameAction()
+    {
+        if (this._ball.onTheRocket)
+        {
+            this._ball.push();
+            this._userBar.message.text = '';
+        }
+    }
+
+    protected gameSound()
+    {
+        this._music = !this._music;
+        createjs.Sound.muted = !this._music;
+    }
+
+    protected gameCheat()
+    {
+        this._cheatMode = !this._cheatMode;
+    }
+
     protected eventPointerDown(event: any)
     {
         console.log(event);
         let mouseX = event.data.global.x;
+        let mouseY = event.data.global.y;
         let width = event.data.originalEvent.target.width;
-
+        let height = event.data.originalEvent.target.height;
         console.log(mouseX, width);
-        if (mouseX <= width/2 - 128)
+        if (mouseY >= height/2)
         {
-            this._rocket.velocity = -1;
-        }
-        if (mouseX >= width/2 + 128)
-        {
-            this._rocket.velocity = 1;
-        }
-        else if (mouseX < width/2 + 128 && mouseX > width/2 - 128 && this._ball.onTheRocket)
-        {
-            this._ball.push();
-            this._userBar.message.text = '';
+            if (mouseX < width/2)
+            {
+                this._rocket.velocity = -1;
+            }
+            if (mouseX > width/2)
+            {
+                this._rocket.velocity = 1;
+            }
         }
     }
 
@@ -124,22 +189,13 @@ export class Game extends Container
             this._cheatMode = !this._cheatMode;
         }
         else if (event.keyCode == 32 && event.type == 'keydown') {
-            this._pause = !this._pause;
-            if (this._pause)
-                this._userBar.message.text = 'Press Space to continue!';
-            else
-                this._userBar.message.text = '';
+            this.gamePause();
         }
         else if (event.keyCode == 40 && event.type == 'keydown') {
-            this._music = !this._music;
-            createjs.Sound.muted = !this._music;
+            this.gameSound();
         }
         else if (event.keyCode == 90 && event.type == 'keydown') {
-            if (this._ball.onTheRocket)
-            {
-                this._ball.push();
-                this._userBar.message.text = '';
-            }
+            this.gameAction();
         }
     }
 
@@ -180,10 +236,10 @@ export class Game extends Container
         this._score = 0;
         this._stage = 1;
         this._lives = 3;
-        this._userBar.score.text = 'Score: ' + this._score;
-        this._userBar.lives.text = 'Lives: ' + this._lives;
-        this._userBar.stage.text = 'Stage: ' + this._stage;
-        this._userBar.message.text = 'Press Z to start!';
+        this._userBar.score.text = 'SCORE: ' + this._score;
+        this._userBar.lives.text = 'LIVES: ' + this._lives;
+        this._userBar.stage.text = 'STAGE: ' + this._stage;
+        this._userBar.message.text = 'PRESS Z BUTTON TO START!';
         this._rocket.reset();
         this._ball.reset(this._rocket.posX + this._rocket.width/2 - this._ball.width/2, Game.HEIGHT - 48);
         this._level.setStage(this._stage);
@@ -193,9 +249,9 @@ export class Game extends Container
     {
         this._stage += 1;
         this._lives += 2;
-        this._userBar.score.text = 'Score: ' + this._score;
-        this._userBar.lives.text = 'Lives: ' + this._lives;
-        this._userBar.stage.text = 'Stage: ' + this._stage;
+        this._userBar.score.text = 'SCORE: ' + this._score;
+        this._userBar.lives.text = 'LIVES: ' + this._lives;
+        this._userBar.stage.text = 'STAGE: ' + this._stage;
         this._rocket.reset();
         this._ball.reset(this._rocket.posX + this._rocket.width/2 - this._ball.width/2, Game.HEIGHT - 48);
         this._level.setStage(this._stage);
@@ -211,7 +267,7 @@ export class Game extends Container
             if (blockDestroyed)
             {
                 this._score += 100;
-                this._userBar.score.text = 'Score: ' + this._score;
+                this._userBar.score.text = 'SCORE: ' + this._score;
             }
         }
     }
@@ -220,7 +276,7 @@ export class Game extends Container
     {
         this._ball.reset(this._rocket.posX + this._rocket.width/2 - this._ball.width/2, Game.HEIGHT - 48);
         this._lives -= 1;
-        this._userBar.lives.text = 'Lives: ' + this._lives;
+        this._userBar.lives.text = 'LIVES: ' + this._lives;
         if (this._lives <= 0)
         {
             this.gameEnd();

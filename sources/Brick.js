@@ -24,6 +24,9 @@ var Brick = (function (_super) {
         _this.posX = x;
         _this.posY = y;
         _this._strength = strength;
+        if (_this._strength == 3) {
+            _this.powerBrick = true;
+        }
         _this.configurate();
         return _this;
     }

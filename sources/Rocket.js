@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Container = PIXI.Container;
 var Sprite = PIXI.Sprite;
 var Game_1 = require("./Game");
+var Texture = PIXI.Texture;
 var Rocket = (function (_super) {
     __extends(Rocket, _super);
     // Init >>--------------------------------------------------------------<<<<
@@ -29,7 +30,9 @@ var Rocket = (function (_super) {
         return _this;
     }
     Rocket.prototype.configurate = function () {
-        this._image = Sprite.fromImage('assets/rocket.png');
+        this._normalRocket = Texture.fromImage('assets/rocket.png');
+        this._longRocket = Texture.fromImage('assets/long_rocket.png');
+        this._image = new Sprite(this._normalRocket);
         this._image.position.set(this.posX, this.posY);
         this.addChild(this._image);
     };
@@ -46,6 +49,18 @@ var Rocket = (function (_super) {
             this.posX = Game_1.Game.WIDTH - this.width - 32;
         }
         this._image.position.set(this.posX, this.posY);
+    };
+    Rocket.prototype.powerUp = function (type) {
+        switch (type) {
+            case 'LongRocket':
+                this.posX -= 18;
+                this._image.texture = this._longRocket;
+                setTimeout(function () {
+                    this._image.texture = this._normalRocket;
+                    this.posX += 18;
+                }.bind(this), 15000);
+                break;
+        }
     };
     return Rocket;
 }(Container));

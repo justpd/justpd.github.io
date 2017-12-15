@@ -11,7 +11,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var Container = PIXI.Container;
+var Game_1 = require("./Game");
 var Brick_1 = require("./Brick");
+var PowerUp_1 = require("./PowerUp");
 var Level = (function (_super) {
     __extends(Level, _super);
     // Init >>--------------------------------------------------------------<<<<
@@ -20,17 +22,21 @@ var Level = (function (_super) {
      */
     function Level() {
         var _this = _super.call(this) || this;
+        _this.powerUps = [];
         _this._levelMatrix =
             [
                 [],
                 [],
                 [],
                 [],
-                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-                [0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2],
-                [0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2],
-                [0, 0, 0, 2, 2, 0, 0, 0, 0, 2, 2],
-                [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+                [],
+                [],
+                [],
+                [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+                [0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2],
+                [0, 0, 0, 2, 2, 0, 0, 4, 0, 0, 2, 2],
+                [0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2],
+                [0, 0, 0, 1, 1, 1, 1, 3, 1, 1, 1, 1],
             ];
         _this.configurate();
         return _this;
@@ -60,18 +66,29 @@ var Level = (function (_super) {
             case 1:
                 this._levelMatrix =
                     [
-                        [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-                        [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
-                        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                        [],
+                        [],
+                        [],
+                        [],
+                        [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+                        [0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2],
+                        [0, 0, 0, 2, 2, 0, 0, 3, 0, 0, 2, 2],
+                        [0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 2, 2],
+                        [0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
                     ];
                 break;
             case 2:
                 this._levelMatrix =
                     [
-                        [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0],
-                        [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0]
+                        [],
+                        [],
+                        [],
+                        [],
+                        [0, 0, 0, 1, 1, 2, 0, 0, 2, 1, 1, 1],
+                        [0, 0, 0, 1, 1, 2, 0, 0, 2, 1, 1, 1],
+                        [0, 0, 0, 1, 1, 3, 0, 0, 3, 1, 1, 1],
+                        [0, 0, 0, 1, 1, 2, 0, 0, 2, 1, 1, 1],
+                        [0, 0, 0, 1, 1, 2, 0, 0, 2, 1, 1, 1],
                     ];
                 break;
         }
@@ -116,6 +133,11 @@ var Level = (function (_super) {
             if (collision) {
                 var blockDestroyed = this._bricks[i].dealDamage();
                 if (blockDestroyed) {
+                    if (this._bricks[i].powerBrick) {
+                        var newPowerUp = new PowerUp_1.PowerUp(this._bricks[i].posX + this._bricks[i].width / 2, this._bricks[i].posY + this._bricks[i].height);
+                        this.powerUps.push(newPowerUp);
+                        this.addChild(newPowerUp);
+                    }
                     this.removeChild(this._bricks[i]);
                     this._bricks.splice(i, 1);
                     if (this._bricks.length <= 0) {
@@ -134,6 +156,18 @@ var Level = (function (_super) {
             var velocity = this.calculateVelocity(ball.posX, ball.posY, rocket.posX, rocket.width, rocket.posY, rocket.height);
             createjs.Sound.play('pong');
             this.emit('Collision', velocity[0], velocity[1] * ball.velocityY, false);
+        }
+        for (var i = 0; i < this.powerUps.length; i++) {
+            if (this.rectangleCollision(this.powerUps[i].posX, this.powerUps[i].posY, this.powerUps[i].width, this.powerUps[i].height, rocket.posX, rocket.posY, rocket.width, rocket.height)) {
+                this.powerUps[i].active = false;
+                this.emit('PowerUp', this.powerUps[i].power);
+                this.removeChild(this.powerUps[i]);
+                this.powerUps.splice(i, 1);
+            }
+            else if (this.powerUps[i].posY > Game_1.Game.HEIGHT) {
+                this.removeChild(this.powerUps[i]);
+                this.powerUps.splice(i, 1);
+            }
         }
     };
     Level.prototype.calculateVelocity = function (ballX, ballY, rectX, rectWidth, rectY, rectHeight) {
