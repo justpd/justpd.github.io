@@ -160,11 +160,6 @@ define(["require", "exports", "./Game", "./Brick", "./PowerUp", "./Enemy"], func
                         if (this._bricks.length <= 0) {
                             this.emit(Level.EVENT_NEXT_LEVEL);
                         }
-                        if (Math.random() * 100 > 85) {
-                            var newEnemy = new Enemy_1.Enemy(Game_1.Game.WIDTH / 2, 50);
-                            this.enemies.push(newEnemy);
-                            this.addChild(newEnemy);
-                        }
                     }
                     createjs.Sound.play(Game_1.Game.AUDIO_SOURCE_COLLISION);
                     this.emit(Level.EVENT_COLLISION, velocityX, velocityY, blockDestroyed);
@@ -174,6 +169,11 @@ define(["require", "exports", "./Game", "./Brick", "./PowerUp", "./Enemy"], func
             if (this.rectangleCollision(ball.posX, ball.posY, ball.width, ball.height, rocket.posX, rocket.posY, rocket.width, rocket.height, false)) {
                 var velocity = this.calculateVelocity(ball.posX, ball.width / 2, rocket.posX, rocket.width);
                 createjs.Sound.play(Game_1.Game.AUDIO_SOURCE_PONG);
+                if (Math.random() * 100 > 85) {
+                    var newEnemy = new Enemy_1.Enemy(Game_1.Game.WIDTH / 2, 50);
+                    this.enemies.push(newEnemy);
+                    this.addChild(newEnemy);
+                }
                 this.emit(Level.EVENT_COLLISION, velocity[0], velocity[1] * ball.velocityY, false);
             }
             for (var i = 0; i < this.powerUps.length; i++) {
@@ -199,7 +199,6 @@ define(["require", "exports", "./Game", "./Brick", "./PowerUp", "./Enemy"], func
                 }
                 else if (this.rectangleCollision(this.enemies[i].posX, this.enemies[i].posY, this.enemies[i].width, this.enemies[i].height, ball.posX, ball.posY, ball.width, ball.height, true)) {
                     createjs.Sound.play(Game_1.Game.AUDIO_SOURCE_ENEMY);
-                    ball.emit(Level.EVENT_BALL_OUT);
                     this.enemies[i].active = false;
                     this.removeChild(this.enemies[i]);
                     this.enemies.splice(i, 1);
