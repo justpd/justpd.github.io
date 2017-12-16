@@ -26,26 +26,40 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
         }
         UserBar.prototype.configurate = function () {
             var style = new TextStyle({ fill: '#ffffff', fontSize: 28, fontWeight: '600', dropShadow: true, align: 'center' });
-            this.score = new PIXI.Text('Score: 0');
-            this.lives = new PIXI.Text('Lives: 0');
-            this.stage = new PIXI.Text('Stage: 0');
-            this.message = new PIXI.Text('Press Space to continue !');
-            this.score.position.set(5, 10);
-            this.lives.anchor.set(1, 0);
-            this.lives.position.set(Game_1.Game.WIDTH - 5, 10);
-            this.stage.anchor.set(0.5);
-            this.stage.position.set(Game_1.Game.WIDTH / 2, 68);
-            this.message.anchor.set(0.5);
-            this.message.position.set(Game_1.Game.WIDTH / 2, Game_1.Game.HEIGHT / 2);
-            this.lives.style = style;
-            this.score.style = style;
-            this.stage.style = new TextStyle({ fill: '#ffffff', fontSize: 18, fontWeight: '600', dropShadow: false, align: 'center' });
-            this.message.style = style;
-            this.addChild(this.score);
-            this.addChild(this.lives);
-            this.addChild(this.stage);
-            this.addChild(this.message);
+            this._score = new PIXI.Text();
+            this._lives = new PIXI.Text();
+            this._stage = new PIXI.Text();
+            this._message = new PIXI.Text();
+            this._score.position.set(5, 10);
+            this._lives.anchor.set(1, 0);
+            this._lives.position.set(Game_1.Game.WIDTH - 5, 10);
+            this._stage.anchor.set(0.5);
+            this._stage.position.set(Game_1.Game.WIDTH / 2, 68);
+            this._message.anchor.set(0.5);
+            this._message.position.set(Game_1.Game.WIDTH / 2, Game_1.Game.HEIGHT / 2);
+            this._lives.style = style;
+            this._score.style = style;
+            this._stage.style = new TextStyle({ fill: '#ffffff', fontSize: 18, fontWeight: '600', dropShadow: false, align: 'center' });
+            this._message.style = style;
+            this.addChild(this._score);
+            this.addChild(this._lives);
+            this.addChild(this._stage);
+            this.addChild(this._message);
         };
+        UserBar.prototype.setUserBar = function (score, lives, stage) {
+            this._score.text = UserBar.SCORE_TEXT + score;
+            this._lives.text = UserBar.LIVES_TEXT + lives;
+            this._stage.text = UserBar.STAGE_TEXT + stage;
+        };
+        UserBar.prototype.setMessage = function (text) {
+            this._message.text = text;
+        };
+        // Params >>------------------------------------------------------------<<<<
+        UserBar.SCORE_TEXT = 'SCORE: ';
+        UserBar.LIVES_TEXT = 'LIVES: ';
+        UserBar.STAGE_TEXT = 'STAGE: ';
+        UserBar.START_TEXT = 'PRESS Z TO START';
+        UserBar.PAUSE_TEXT = 'GAME PAUSED';
         return UserBar;
     }(Container));
     exports.UserBar = UserBar;

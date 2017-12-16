@@ -6,8 +6,8 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
     document.body.appendChild(application.view);
     var game = new Game_1.Game();
     application.stage.addChild(game);
-    document.addEventListener('keydown', game.keyboardInput.bind(game));
-    document.addEventListener('keyup', game.keyboardInput.bind(game));
+    document.addEventListener('keydown', game.eventKeyboardInput.bind(game));
+    document.addEventListener('keyup', game.eventKeyboardInput.bind(game));
     function eventListenerResize() {
         application.renderer.resize(window.innerWidth, window.innerHeight);
         var scale = Math.min(window.innerWidth / Game_1.Game.WIDTH, window.innerHeight / Game_1.Game.HEIGHT);

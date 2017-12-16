@@ -30,13 +30,17 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             return _this;
         }
         Rocket.prototype.configurate = function () {
-            this._normalRocket = Texture.fromImage('assets/rocket.png');
-            this._longRocket = Texture.fromImage('assets/long_rocket.png');
+            this._normalRocket = Texture.fromImage('assets/images/' + Game_1.Game.IMAGE_SOURCE_ROCKET);
+            this._longRocket = Texture.fromImage('assets/images/' + Game_1.Game.IMAGE_SOURCE_LONG_ROCKET);
             this._image = new Sprite(this._normalRocket);
             this._image.position.set(this.posX, this.posY);
             this.addChild(this._image);
+            this._longitude = false;
         };
         Rocket.prototype.reset = function () {
+            this._longitude = false;
+            this._image.texture = this._normalRocket;
+            this.posX += 18;
             this.posX = Game_1.Game.WIDTH / 2 - 48;
             this._image.position.set(this.posX, this.posY);
         };
@@ -55,9 +59,13 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 case 'LongRocket':
                     this.posX -= 18;
                     this._image.texture = this._longRocket;
+                    this._longitude = true;
                     setTimeout(function () {
-                        this._image.texture = this._normalRocket;
-                        this.posX += 18;
+                        if (this._longitude) {
+                            this._image.texture = this._normalRocket;
+                            this.posX += 18;
+                            this._longitude = false;
+                        }
                     }.bind(this), 15000);
                     break;
             }

@@ -8,7 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "./Game"], function (require, exports, Game_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Container = PIXI.Container;
@@ -25,8 +25,14 @@ define(["require", "exports"], function (require, exports) {
             _this.posX = x;
             _this.posY = y;
             _this._strength = strength;
-            if (_this._strength == 3) {
-                _this.powerBrick = true;
+            switch (_this._strength) {
+                case 3:
+                    _this.powerBrick = 'LongRocket';
+                    break;
+                default:
+                    if (Math.random() * 100 > 96) {
+                        _this.powerBrick = 'Heal';
+                    }
             }
             _this.configurate();
             return _this;
@@ -38,7 +44,7 @@ define(["require", "exports"], function (require, exports) {
             this.addChild(this._image);
         };
         Brick.prototype.setImage = function () {
-            this._image.texture = Texture.fromImage('assets/brick_' + (this._strength - 1) + '.png');
+            this._image.texture = Texture.fromImage('assets/images/' + this._strength + '_' + Game_1.Game.IMAGE_SOURCE_BRICKS);
         };
         Brick.prototype.dealDamage = function () {
             this._strength -= 1;
