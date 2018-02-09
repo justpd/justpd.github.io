@@ -257,7 +257,7 @@ p {
 
 #header_wrapper {
     background: #15BA57;
-    padding: 20px 0px;
+    padding: 5px 0px 5px 0px;
 
     border-top: 4px solid #FFFFFF;
 	box-shadow: 1px 1px 4px rgba(60, 60, 60, 0.44);
@@ -271,7 +271,6 @@ p {
 
 .logo {
     float: left;
-    margin-top: 8px;
 	position: relative;
 	z-index: 2;
 }
