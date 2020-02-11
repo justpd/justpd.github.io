@@ -1,4 +1,3 @@
-import Application = PIXI.Application;
 import Sprite = PIXI.Sprite;
 import Text = PIXI.Text;
 import TextStyle = PIXI.TextStyle;
@@ -33,26 +32,13 @@ export class Game extends Container {
     private _timerText: Text;
     private _scoreText: Text;
     private _comboText: Text;
-    private _timeToPlay: number = 301;
+    private _timeToPlay: number = 180;
     private _time: number;
     private _timer: any;
     private _state: number;
     private _score: number;
     private _combo: number;
 
-    public upCombo() {
-        if (this._combo == 0)
-            TweenMax.to(this._comboText, 0.2, { alpha: 1 });
-
-        this._combo += 1;
-        this._comboText.text = "x" + this._combo.toString();
-        this._score += 50 * this._combo;
-        this._scoreText.text = this._score.toString();
-    }
-
-    public getCombo(value: number): number {
-        return this._combo;
-    }
 
     constructor(resources: any) {
         super();
@@ -62,8 +48,8 @@ export class Game extends Container {
         this._state = Game.IDLE;
 
         this.on('eventTimerStart', this.startTimer);
-        this.on('onComboEnd', this.endCombo);
-        this.on('onComboUp', this.upCombo);
+        this.on('eventComboEnd', this.endCombo);
+        this.on('eventComboUp', this.upCombo);
 
         this._field = new Field();
         this._background = new Sprite(Game.RES.background.texture);
@@ -83,8 +69,7 @@ export class Game extends Container {
         this.addChild(this._timerText);
         this.addChild(this._scoreText);
 
-        this._field.destroyField();
-        this._field.generateField();
+        this._field.emit('eventSetField');
     }
 
     private setUI(): void {
@@ -154,21 +139,29 @@ export class Game extends Container {
 
     private endGame(): void {
         this._field.switchInteractive(false);
+        this.removeChild(this._field);
 
         TweenMax.to(this._field, 2, { alpha: 0 });
         TweenMax.to(this._scoreText, 2, { x: Game.WIDTH / 2, y: Game.HEIGHT * 0.45 });
         TweenMax.to(this._scoreText.scale, 2, { x: 1.5, y: 1.5 });
 
         this.addChild(this._restartButton);
-        this._restartButton.sprite.interactive = false;
-        let tl = new TimelineMax({
-            onComplete: function () {
-                this._restartButton.sprite.interactive = true;
-            }.bind(this)
-        });
+        this._restartButton.setInteractive(false);
+        let tl = new TimelineMax({ onComplete: function() { this._restartButton.setInteractive(true); }.bind(this) });
         tl.fromTo(this._restartButton, 2, { x: Game.WIDTH / 2, y: Game.HEIGHT - 300, alpha: 0 },
             { x: Game.WIDTH / 2, y: Game.HEIGHT * 0.55, alpha: 1 });
     }
+
+    private upCombo(): void {
+        if (this._combo == 0)
+            TweenMax.to(this._comboText, 0.2, { alpha: 1 });
+
+        this._combo += 1;
+        this._comboText.text = "x" + this._combo.toString();
+        this._score += 50 * this._combo;
+        this._scoreText.text = this._score.toString();
+    }
+
 
     private endCombo(): void {
         this._combo = 0;
@@ -178,10 +171,16 @@ export class Game extends Container {
             this.endGame();
     }
 
+
     private onTimerTick(): void {
         this._time -= 1;
+        if (this._time < 60)
+            this._field.setOresCount(7);
+        else if (this._time < 120)
+            this._field.setOresCount(6);
         this.setTimerText();
     }
+
 
     private setTimerText(): void {
         let sec = this._time % 60;

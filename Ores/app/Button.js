@@ -23,76 +23,77 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             if (_fill === void 0) { _fill = "#ffffff"; }
             if (_align === void 0) { _align = "center"; }
             var _this = _super.call(this) || this;
-            _this.pressedAlpha = 0.4;
-            _this.sprite = new Sprite();
+            _this._pressedAlpha = 0.4;
+            _this._sprite = new Sprite();
             _this.setAnchor(0.5, 0.5);
-            _this.sprite.interactive = true;
-            _this.sprite.buttonMode = true;
-            _this.normalTexture = _norm;
-            _this.pressTexture = _pressed;
-            _this.text = new Text(_text);
-            _this.text.anchor.set(0.5, 0.5);
-            _this.text.position.set(0, _this.sprite.height / 2);
-            _this.text.style = new TextStyle({
+            _this.setInteractive(true);
+            _this._sprite.buttonMode = true;
+            _this._normalTexture = _norm;
+            _this._pressTexture = _pressed;
+            _this._text = new Text(_text);
+            _this._text.anchor.set(0.5, 0.5);
+            _this._text.position.set(0, _this._sprite.height / 2);
+            _this._text.style = new TextStyle({
                 fontSize: _fonstSize, fontFamily: "Unispace", fill: _fill, align: _align, fontWeight: "400",
                 dropShadow: false
             });
             _this.setShadowEffects();
-            _this.sprite.on("pointerover", function () {
+            _this._sprite.on("pointerover", function () {
                 this.setPressStyle();
             }.bind(_this));
-            _this.sprite.on("pointerout", function () {
-                if (this.alpha == 1) {
+            _this._sprite.on("pointerout", function () {
+                if (this.alpha == 1)
                     this.setNormalStyle();
-                }
             }.bind(_this));
-            _this.sprite.on("pointerdown", function () {
-                this.alpha = this.pressedAlpha;
+            _this._sprite.on("pointerdown", function () {
+                this.alpha = this._pressedAlpha;
                 createjs.Sound.play(Game_1.Game.SOUND_PRESS, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.5);
                 this.setPressStyle();
             }.bind(_this));
-            _this.sprite.on("pointerupoutside", function () {
+            _this._sprite.on("pointerupoutside", function () {
                 this.alpha = 1;
-                if (this.sprite.texture == this.pressTexture) {
+                if (this._sprite.texture == this._pressTexture)
                     this.setNormalStyle();
-                }
             }.bind(_this));
-            _this.sprite.on("pointerup", function () {
+            _this._sprite.on("pointerup", function () {
                 this.setNormalStyle();
-                this.sprite.interactive = false;
+                this.setInteractive(false);
                 this.emit("click");
                 setTimeout(function () {
                     this.alpha = 1;
-                    this.sprite.interactive = true;
+                    this.setInteractive(true);
                 }.bind(this), 50);
             }.bind(_this));
-            _this.sprite.texture = _this.normalTexture;
-            _this.addChild(_this.sprite);
-            _this.addChild(_this.text);
+            _this._sprite.texture = _this._normalTexture;
+            _this.addChild(_this._sprite);
+            _this.addChild(_this._text);
             return _this;
         }
         Button.prototype.setAnchor = function (x, y) {
-            this.sprite.anchor.set(x, y);
+            this._sprite.anchor.set(x, y);
         };
         // Функции для кастомизирования кнопок
         Button.prototype.setNormalStyle = function () {
-            this.sprite.texture = this.normalTexture;
-            this.text.style.fontWeight = "400";
-            this.text.style.dropShadow = false;
+            this._sprite.texture = this._normalTexture;
+            this._text.style.fontWeight = "400";
+            this._text.style.dropShadow = false;
         };
         Button.prototype.setPressStyle = function () {
-            this.sprite.texture = this.pressTexture;
-            this.text.style.fontWeight = "500";
-            this.text.style.dropShadow = true;
+            this._sprite.texture = this._pressTexture;
+            this._text.style.fontWeight = "500";
+            this._text.style.dropShadow = true;
         };
         Button.prototype.setShadowEffects = function () {
-            this.text.style.dropShadowDistance = 6;
-            this.text.style.dropShadowBlur = 5;
+            this._text.style.dropShadowDistance = 6;
+            this._text.style.dropShadowBlur = 5;
         };
         Button.prototype.reset = function () {
             this.setNormalStyle();
-            this.sprite.interactive = true;
+            this.setInteractive(true);
             this.alpha = 1;
+        };
+        Button.prototype.setInteractive = function (value) {
+            this._sprite.interactive = value;
         };
         return Button;
     }(Container));

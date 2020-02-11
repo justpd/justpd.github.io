@@ -17,8 +17,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
         __extends(Tile, _super);
         function Tile(field, type, pos) {
             var _this = _super.call(this) || this;
-            _this.itemTextures = [
-                // Пустая клетка
+            _this._itemTextures = [
                 null,
                 Game_1.Game.RES.redBall.texture,
                 Game_1.Game.RES.orangeBall.texture,
@@ -44,8 +43,8 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 "x": 0,
                 "y": 0
             };
-            _this.background = new Sprite(Game_1.Game.RES.field.texture);
-            _this.addChild(_this.background);
+            _this._background = new Sprite(Game_1.Game.RES.field.texture);
+            _this.addChild(_this._background);
             _this.pos.x = pos[0];
             _this.pos.y = pos[1];
             _this.item = new Sprite();
@@ -57,27 +56,27 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             _this._field = field;
             _this.setState(_this.States.IDLE);
             _this.item.on("pointerover", function () {
-                if (this.state == this.States.IDLE) {
+                if (this._state == this.States.IDLE) {
                     this.item.alpha = 0.75;
                 }
             }.bind(_this));
             _this.item.on("pointerout", function () {
-                if (this.state == this.States.IDLE) {
+                if (this._state == this.States.IDLE) {
                     this.item.alpha = 1;
                 }
             }.bind(_this));
             _this.item.on("pointerdown", function () {
-                if (this.state == this.States.IDLE) {
+                if (this._state == this.States.IDLE) {
                     this.select();
                 }
                 else {
-                    if (this.state == this.States.SELECTED) {
+                    if (this._state == this.States.SELECTED) {
                         this.deselect();
                     }
                 }
             }.bind(_this));
             _this.item.on("pointerupoutside", function () {
-                if (this.state == this.States.SELECTED) {
+                if (this._state == this.States.SELECTED) {
                     this.deselect();
                 }
             }.bind(_this));
@@ -86,13 +85,13 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             return _this;
         }
         Tile.prototype.setState = function (state) {
-            this.state = state;
+            this._state = state;
         };
         // Выбор шарика
         Tile.prototype.select = function () {
-            if (this._field.selectedTile == null) {
+            if (this._field.getSelectedTile() == null) {
                 TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: this.pressedAlpha });
-                this._field.selectedTile = this;
+                this._field.setSelectedTile(this);
                 this.setState(this.States.SELECTED);
                 this._field.highlightNeighbours(this);
                 createjs.Sound.play(Game_1.Game.SOUND_SELECT, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.05);
@@ -104,35 +103,36 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
         // Отмена выбора шарика
         Tile.prototype.deselect = function (playSound) {
             if (playSound === void 0) { playSound = true; }
-            if (this._field.selectedTile == this) {
-                this._field.selectedTile = null;
+            if (this._field.getSelectedTile() == this) {
+                this._field.setSelectedTile(null);
             }
             this._field.unHighlightNeighbours(this);
             this.setState(this.States.IDLE);
             TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: 1 });
-            if (playSound) {
+            if (playSound)
                 createjs.Sound.play(Game_1.Game.SOUND_UNSELECT, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.05);
-            }
         };
         // Смена позиций двух шариков между друг другом
         Tile.prototype.swap = function () {
             if (this.highlighted) {
+                var selectedTile = this._field.getSelectedTile();
                 this._field.switchInteractive(false);
-                this._field.unHighlightNeighbours(this._field.selectedTile);
-                var y1 = (this._field.selectedTile.pos.x - this.pos.x) * 75;
-                var x1 = (this._field.selectedTile.pos.y - this.pos.y) * 75;
-                this._field.selectedTile.item.alpha = 1;
+                this._field.unHighlightNeighbours(selectedTile);
+                var y1 = (selectedTile.pos.x - this.pos.x) * 75;
+                var x1 = (selectedTile.pos.y - this.pos.y) * 75;
+                selectedTile.item.alpha = 1;
                 this.item.alpha = 1;
                 TweenMax.to(this.item, 0.75, { x: this.item.x + x1, y: this.item.y + y1 });
-                TweenMax.to(this._field.selectedTile.item, 0.75, { x: this.item.x - x1, y: this.item.y - y1 });
+                TweenMax.to(selectedTile.item, 0.75, { x: this.item.x - x1, y: this.item.y - y1 });
                 var tl = new TimelineMax({
                     repeat: 1, repeatDelay: 0.8, onComplete: function () {
                         var temp = this.type;
-                        this.setType(this._field.selectedTile.type);
-                        this._field.selectedTile.setType(temp);
+                        var selected = this._field.getSelectedTile();
+                        this.setType(selected.type);
+                        selected.setType(temp);
                         TweenMax.set(this.item, { x: 37.5, y: 37.5 });
-                        TweenMax.set(this._field.selectedTile.item, { x: 37.5, y: 37.5 });
-                        this._field.selectedTile.deselect(false);
+                        TweenMax.set(selected.item, { x: 37.5, y: 37.5 });
+                        selected.deselect(false);
                         var matches = this._field.findMatches();
                         this._field.animateDestroy(matches);
                     }.bind(this)
@@ -149,7 +149,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 tl.fromTo(this.item, fall, { y: this.item.y - 75 * mult }, { y: this.item.y });
             }
             this.type = t;
-            this.item.texture = this.itemTextures[this.type];
+            this.item.texture = this._itemTextures[this.type];
             this.item.alpha = 1;
             this.item.rotation = 0;
             this.item.scale.set(0.8);
@@ -160,15 +160,15 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
         };
         // Подсветка клетки
         Tile.prototype.highlight = function () {
-            if (this.background.texture == this.fieldTextures[0]) {
-                this.background.texture = this.fieldTextures[1];
+            if (this._background.texture == this.fieldTextures[0]) {
+                this._background.texture = this.fieldTextures[1];
             }
             this.highlighted = true;
         };
         // Отмена подсветки клетки
         Tile.prototype.unHighlight = function () {
-            if (this.background.texture == this.fieldTextures[1]) {
-                this.background.texture = this.fieldTextures[0];
+            if (this._background.texture == this.fieldTextures[1]) {
+                this._background.texture = this.fieldTextures[0];
             }
             this.highlighted = false;
         };

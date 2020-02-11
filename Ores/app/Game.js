@@ -20,14 +20,14 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
         __extends(Game, _super);
         function Game(resources) {
             var _this = _super.call(this) || this;
-            _this._timeToPlay = 301;
+            _this._timeToPlay = 180;
             Game.RES = resources;
             _this._score = 0;
             _this._combo = 0;
             _this._state = Game.IDLE;
             _this.on('eventTimerStart', _this.startTimer);
-            _this.on('onComboEnd', _this.endCombo);
-            _this.on('onComboUp', _this.upCombo);
+            _this.on('eventComboEnd', _this.endCombo);
+            _this.on('eventComboUp', _this.upCombo);
             _this._field = new Field_1.Field();
             _this._background = new Sprite(Game.RES.background.texture);
             _this._soundSwitcher = new Switcher_1.Switcher(Game.RES.soundSwitcherOn.texture, Game.RES.soundSwitcherOff.texture);
@@ -43,21 +43,9 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             _this.addChild(_this._comboText);
             _this.addChild(_this._timerText);
             _this.addChild(_this._scoreText);
-            _this._field.destroyField();
-            _this._field.generateField();
+            _this._field.emit('eventSetField');
             return _this;
         }
-        Game.prototype.upCombo = function () {
-            if (this._combo == 0)
-                TweenMax.to(this._comboText, 0.2, { alpha: 1 });
-            this._combo += 1;
-            this._comboText.text = "x" + this._combo.toString();
-            this._score += 50 * this._combo;
-            this._scoreText.text = this._score.toString();
-        };
-        Game.prototype.getCombo = function (value) {
-            return this._combo;
-        };
         Game.prototype.setUI = function () {
             this._background.width = Game.WIDTH;
             this._background.height = Game.HEIGHT;
@@ -114,17 +102,22 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
         };
         Game.prototype.endGame = function () {
             this._field.switchInteractive(false);
+            this.removeChild(this._field);
             TweenMax.to(this._field, 2, { alpha: 0 });
             TweenMax.to(this._scoreText, 2, { x: Game.WIDTH / 2, y: Game.HEIGHT * 0.45 });
             TweenMax.to(this._scoreText.scale, 2, { x: 1.5, y: 1.5 });
             this.addChild(this._restartButton);
-            this._restartButton.sprite.interactive = false;
-            var tl = new TimelineMax({
-                onComplete: function () {
-                    this._restartButton.sprite.interactive = true;
-                }.bind(this)
-            });
+            this._restartButton.setInteractive(false);
+            var tl = new TimelineMax({ onComplete: function () { this._restartButton.setInteractive(true); }.bind(this) });
             tl.fromTo(this._restartButton, 2, { x: Game.WIDTH / 2, y: Game.HEIGHT - 300, alpha: 0 }, { x: Game.WIDTH / 2, y: Game.HEIGHT * 0.55, alpha: 1 });
+        };
+        Game.prototype.upCombo = function () {
+            if (this._combo == 0)
+                TweenMax.to(this._comboText, 0.2, { alpha: 1 });
+            this._combo += 1;
+            this._comboText.text = "x" + this._combo.toString();
+            this._score += 50 * this._combo;
+            this._scoreText.text = this._score.toString();
         };
         Game.prototype.endCombo = function () {
             this._combo = 0;
@@ -134,6 +127,10 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
         };
         Game.prototype.onTimerTick = function () {
             this._time -= 1;
+            if (this._time < 60)
+                this._field.setOresCount(7);
+            else if (this._time < 120)
+                this._field.setOresCount(6);
             this.setTimerText();
         };
         Game.prototype.setTimerText = function () {

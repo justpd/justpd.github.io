@@ -1,21 +1,17 @@
-import Application = PIXI.Application;
 import Sprite = PIXI.Sprite;
 import Container = PIXI.Container;
 import Texture = PIXI.Texture;
 import { Field } from "./Field";
 import { Game } from "./Game";
-import { Button } from "./Button";
-// import { TimelineMax } from "gsap";
 
-declare let TweenMax: any; // https://greensock.com/forums/topic/15365-not-able-to-move-div-in-angular-2/
-declare let TimelineMax: any; // https://greensock.com/forums/topic/15365-not-able-to-move-div-in-angular-2/
+declare let TweenMax: any;
+declare let TimelineMax: any;
 
 export class Tile extends Container {
-    private item: Sprite;
-    private background: Sprite;
-    private itemTextures: Texture[] = [
-        // Пустая клетка
-        null,
+    public item: Sprite;
+    private _background: Sprite;
+    private _itemTextures: Texture[] = [
+        null, // Пустая клетка
         Game.RES.redBall.texture,
         Game.RES.orangeBall.texture,
         Game.RES.greenBall.texture,
@@ -33,7 +29,7 @@ export class Tile extends Container {
     protected isOver: boolean = true;
     protected isDown: boolean = false;
 
-    private state: number;
+    private _state: number;
     private _field: Field;
     private States = {
         "IDLE": 1,
@@ -49,14 +45,14 @@ export class Tile extends Container {
     public highlighted: boolean;
 
     private setState(state: any): void {
-        this.state = state;
+        this._state = state;
     }
 
     constructor(field: Field, type: number, pos: number[]) {
         super();
 
-        this.background = new Sprite(Game.RES.field.texture);
-        this.addChild(this.background);
+        this._background = new Sprite(Game.RES.field.texture);
+        this.addChild(this._background);
 
         this.pos.x = pos[0];
         this.pos.y = pos[1];
@@ -72,29 +68,29 @@ export class Tile extends Container {
         this.setState(this.States.IDLE);
 
         this.item.on("pointerover", function (): void {
-            if (this.state == this.States.IDLE) {
+            if (this._state == this.States.IDLE) {
                 this.item.alpha = 0.75;
             }
         }.bind(this));
 
         this.item.on("pointerout", function (): void {
-            if (this.state == this.States.IDLE) {
+            if (this._state == this.States.IDLE) {
                 this.item.alpha = 1;
             }
         }.bind(this));
 
         this.item.on("pointerdown", function (): void {
-            if (this.state == this.States.IDLE) {
+            if (this._state == this.States.IDLE) {
                 this.select();
             } else {
-                if (this.state == this.States.SELECTED) {
+                if (this._state == this.States.SELECTED) {
                     this.deselect();
                 }
             }
         }.bind(this));
 
         this.item.on("pointerupoutside", function (): void {
-            if (this.state == this.States.SELECTED) {
+            if (this._state == this.States.SELECTED) {
                 this.deselect();
             }
         }.bind(this));
@@ -104,10 +100,10 @@ export class Tile extends Container {
     }
 
     // Выбор шарика
-    public select() {
-        if (this._field.selectedTile == null) {
+    public select(): void {
+        if (this._field.getSelectedTile() == null) {
             TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: this.pressedAlpha });
-            this._field.selectedTile = this;
+            this._field.setSelectedTile(this);
             this.setState(this.States.SELECTED);
             this._field.highlightNeighbours(this);
             createjs.Sound.play(Game.SOUND_SELECT, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.05);
@@ -117,86 +113,87 @@ export class Tile extends Container {
     }
 
     // Отмена выбора шарика
-    public deselect(playSound: boolean = true) {
-        if (this._field.selectedTile == this) {
-            this._field.selectedTile = null;
+    public deselect(playSound: boolean = true): void {
+        if (this._field.getSelectedTile() == this) {
+            this._field.setSelectedTile(null);
         }
         this._field.unHighlightNeighbours(this);
         this.setState(this.States.IDLE);
         TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: 1 });
-        if (playSound) {
+        if (playSound)
             createjs.Sound.play(Game.SOUND_UNSELECT, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.05);
-        }
     }
 
     // Смена позиций двух шариков между друг другом
-    public swap() {
+    public swap(): void {
         if (this.highlighted) {
-            this._field.switchInteractive(false);
-            this._field.unHighlightNeighbours(this._field.selectedTile);
-            let y1 = (this._field.selectedTile.pos.x - this.pos.x) * 75;
-            let x1 = (this._field.selectedTile.pos.y - this.pos.y) * 75;
 
-            this._field.selectedTile.item.alpha = 1;
+            let selectedTile = this._field.getSelectedTile();
+
+            this._field.switchInteractive(false);
+            this._field.unHighlightNeighbours(selectedTile);
+            let y1 = (selectedTile.pos.x - this.pos.x) * 75;
+            let x1 = (selectedTile.pos.y - this.pos.y) * 75;
+
+            selectedTile.item.alpha = 1;
             this.item.alpha = 1;
 
 
             TweenMax.to(this.item, 0.75, { x: this.item.x + x1, y: this.item.y + y1 });
-            TweenMax.to(this._field.selectedTile.item, 0.75, { x: this.item.x - x1, y: this.item.y - y1 });
+            TweenMax.to(selectedTile.item, 0.75, { x: this.item.x - x1, y: this.item.y - y1 });
             let tl = new TimelineMax({
                 repeat: 1, repeatDelay: 0.8, onComplete: function () {
                     let temp = this.type;
-                    this.setType(this._field.selectedTile.type);
-                    this._field.selectedTile.setType(temp);
+                    var selected = this._field.getSelectedTile();
+                    this.setType(selected.type);
+                    selected.setType(temp);
                     TweenMax.set(this.item, { x: 37.5, y: 37.5 });
-                    TweenMax.set(this._field.selectedTile.item, { x: 37.5, y: 37.5 });
-                    this._field.selectedTile.deselect(false);
+                    TweenMax.set(selected.item, { x: 37.5, y: 37.5 });
+                    selected.deselect(false);
 
                     let matches = this._field.findMatches();
-
                     this._field.animateDestroy(matches);
-
                 }.bind(this)
             });
         }
     }
 
     // Установка типа шарика
-    public setType(t: number, fall: number = 0, mult: number = 1, event: string = "") {
+    public setType(t: number, fall: number = 0, mult: number = 1, event: string = ""): void {
         if (fall > 0) {
             let tl = new TimelineMax({ onComplete: this.onTileFall.bind(this, event) });
             tl.fromTo(this.item, fall, { y: this.item.y - 75 * mult }, { y: this.item.y });
         }
         this.type = t;
-        this.item.texture = this.itemTextures[this.type];
+        this.item.texture = this._itemTextures[this.type];
         this.item.alpha = 1;
         this.item.rotation = 0;
         this.item.scale.set(0.8);
     }
 
-    public onTileFall(event: string) {
+    public onTileFall(event: string): void {
         if (this.parent && event != "")
             this.parent.emit(event);
     }
 
     // Подсветка клетки
-    public highlight() {
-        if (this.background.texture == this.fieldTextures[0]) {
-            this.background.texture = this.fieldTextures[1];
+    public highlight(): void {
+        if (this._background.texture == this.fieldTextures[0]) {
+            this._background.texture = this.fieldTextures[1];
         }
         this.highlighted = true;
     }
 
     // Отмена подсветки клетки
-    public unHighlight() {
-        if (this.background.texture == this.fieldTextures[1]) {
-            this.background.texture = this.fieldTextures[0];
+    public unHighlight(): void {
+        if (this._background.texture == this.fieldTextures[1]) {
+            this._background.texture = this.fieldTextures[0];
         }
         this.highlighted = false;
     }
 
     // Переключатель воздействия на элементы пользователем
-    public switchInteractive(interactive: boolean) {
+    public switchInteractive(interactive: boolean): void {
         this.item.interactive = interactive;
         this.item.buttonMode = interactive;
     }
