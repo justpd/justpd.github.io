@@ -2,6 +2,7 @@ import Sprite = PIXI.Sprite;
 import Text = PIXI.Text;
 import TextStyle = PIXI.TextStyle;
 import Container = PIXI.Container;
+import Graphics = PIXI.Graphics;
 import Sound = createjs.Sound;
 import { Field } from "./Field";
 import { Switcher } from "./Switcher"
@@ -14,7 +15,7 @@ export class Game extends Container {
 
     public static WIDTH: number = 768;
     public static HEIGHT: number = 1366;
-    public static TILE: number = 96;
+    public static TILE: number = 90;
     public static IDLE: number = 0;
     public static INGAME: number = 1;
     public static GAMEOVER: number = 2;
@@ -42,6 +43,10 @@ export class Game extends Container {
     private _state: number;
     public get state(): number {
         return this._state;
+    }
+    
+    public get combo(): number {
+        return this._combo;
     }
 
 
@@ -83,7 +88,7 @@ export class Game extends Container {
         this._background.alpha = 0.6;
 
         this._textStyle = new TextStyle({
-            fontSize: 68, fontFamily: "Visitor TT2 BFK", fill: '#00ccff', align: "center", fontWeight: "600",
+            fontSize: 80, fontFamily: "Visitor TT2 BFK", fill: '#ffffff', align: "center", fontWeight: "600",
             dropShadow: true,
             dropShadowDistance: 6,
             dropShadowBlur: 5,
@@ -97,6 +102,7 @@ export class Game extends Container {
         this._comboText.anchor.set(0.5);
         this._comboText.position.set(Game.WIDTH / 2, Game.HEIGHT - 120);
         this._comboText.alpha = 0;
+        this._comboText.style.fontSize = 100;
 
         this._timerText.style = this._textStyle;
         this._timerText.anchor.set(0.5);
@@ -165,29 +171,23 @@ export class Game extends Container {
             this.endGame();
     }
     
-    private upCombo(): void {
+    private upCombo(value: number): void {
         if (this._combo == 0) {
             TweenMax.to(this._comboText, 0.2, { alpha: 1 });
+            this._combo = 1;
         } else {
-            TweenMax.fromTo(this._comboText.scale, 1, { x: 1, y: 1 }, { x: 0.75, y: 0.75 })
+            TweenMax.fromTo(this._comboText.scale, 1, { x: 1.75, y: 1.75 }, { x: 1, y: 1 });
+            this._combo += 1;
         }
 
-        this._combo += 1;
         this._comboText.text = "x" + this._combo.toString();
-        this._score += 50 * this._combo;
+        this._score += value * this._combo;
         this._scoreText.text = this._score.toString();
     }
 
 
-
-
-
     private onTimerTick(): void {
         this._time -= 1;
-        if (this._time < 60)
-            this._field.setOresCount(7);
-        else if (this._time < 120)
-            this._field.setOresCount(6);
         this.setTimerText();
     }
 

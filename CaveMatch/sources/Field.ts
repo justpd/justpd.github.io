@@ -77,6 +77,14 @@ export class Field extends Container {
         }
     }
 
+    private getRandomType() {
+        let type = Math.floor(Math.random() * this._oresCount) + 1;
+            if (Math.floor(Math.random() * 9) == 2) {
+                type = 6;
+            }
+        return type;
+    }
+
     // Генерация игрового поля заполненного тайлами
     private generateField(): void {
         if (this._tiles != null) {
@@ -91,7 +99,7 @@ export class Field extends Container {
         for (let i = 0; i < 8; i++) {
             this._tiles[i] = new Array<Tile>(8);
             for (let j = 0; j < 8; j++) {
-                let type = Math.floor(Math.random() * this._oresCount) + 1
+                let type = this.getRandomType();
                 
                 this._tiles[i][j] = new Tile(this, this._plates[i][j], [i, j]);
                 this.addChild(this._tiles[i][j]);
@@ -112,7 +120,7 @@ export class Field extends Container {
         for (let i = 0; i < this._tiles.length; i++) {
             for (let j = 0; j < this._tiles[i].length; j++) {
                 if (this._tiles[i][j].type == 0)
-                    this._tiles[i][j].setType(Math.floor(Math.random() * this._oresCount) + 1, 0.5, 2);
+                    this._tiles[i][j].setType(this.getRandomType(), 0.5, 2);
             }
         }
 
@@ -214,21 +222,54 @@ export class Field extends Container {
         for (let i = 0; i < matches.length; i++) {
             for (let j = 0; j < matches[i].length; j++) {
                 let t = matches[i][j];
+                // this._tiles[t.pos.x][t.pos.y].counted = false;
                 this._tiles[t.pos.x][t.pos.y].setType(0);
             }
         }
         let tl = new TimelineMax({ repeat: 1, repeatDelay: 0.25, onComplete: this.dropTiles.bind(this) });
     }
 
+    private getBlowArea(a: Tile) {
+        let upper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y];
+        let right = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y + 1];
+        let bottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y];
+        let left = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y - 1];
+
+        let leftupper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y - 1];
+        let rightupper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y + 1];
+        
+        let leftbottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y - 1];
+        let rightbottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y + 1];
+
+        let result: Tile[] = new Array<Tile>();
+
+        if (upper && upper.type != 6) result.push(upper);
+        if (right && right.type != 6) result.push(right);
+        if (bottom && bottom.type != 6) result.push(bottom);
+        if (left && left.type != 6) result.push(left);
+        if (leftupper && leftupper.type != 6) result.push(leftupper);
+        if (rightupper && rightupper.type != 6) result.push(rightupper);
+        if (leftbottom && leftbottom.type != 6) result.push(leftbottom);
+        if (rightbottom && rightbottom.type != 6) result.push(rightbottom);
+
+        return result;
+    }
+
     // Анимация удаления совпадений
-    private animateDestroy(matches: any): void {
+    private animateDestroy(matches: Tile[][]): void {
         if (matches.length > 0) {
             this.switchInteractive(false);
             for (let i = 0; i < matches.length; i++) {
                 for (let j = 0; j < matches[i].length; j++) {
-                    this.parent.emit('eventComboUp');
-                    TweenMax.to(matches[i][j].item, 0.4, { alpha: 0, rotation: 2.5 });
-                    TweenMax.to(matches[i][j].item.scale, 0.4, { x: 0, y: 0 });
+                    if (!matches[i][j].counted ) {
+                        this.parent.emit('eventComboUp', matches[i][j].value);
+                        let game = this.parent as Game;
+                        matches[i][j].blow(game.combo);
+                        if (matches[i][j].type == 6) {
+                            let blow = this.getBlowArea(matches[i][j]);
+                            matches.push(blow);
+                        }
+                    }
                 }
             }
 
@@ -254,23 +295,24 @@ export class Field extends Container {
                 if (this._tiles[i][j].type == this._tiles[i][j - 1].type && this._tiles[i][j].type != 0) {
                     if (h_temp == null) {
                         h_temp = new Array();
-                        h_temp.push(this._tiles[i][j]);
                         h_temp.push(this._tiles[i][j - 1]);
+                        h_temp.push(this._tiles[i][j]);
                     } else {
                         h_temp.push(this._tiles[i][j]);
                     }
                 } else {
                     if (h_temp != null) {
-                        if (h_temp.length > 2)
+                        if (h_temp.length > 2){
                             h_matches.push(h_temp);
-
+                        }
                         h_temp = null;
                     }
                 }
             }
             if (h_temp != null) {
-                if (h_temp.length > 2)
+                if (h_temp.length > 2) {
                     h_matches.push(h_temp);
+                }
 
                 h_temp = null;
             }
@@ -281,8 +323,8 @@ export class Field extends Container {
                 if (this._tiles[i][j].type == this._tiles[i - 1][j].type && this._tiles[i][j].type != 0) {
                     if (v_temp == null) {
                         v_temp = new Array();
-                        v_temp.push(this._tiles[i][j]);
                         v_temp.push(this._tiles[i - 1][j]);
+                        v_temp.push(this._tiles[i][j]);
                     } else {
                         v_temp.push(this._tiles[i][j]);
                     }

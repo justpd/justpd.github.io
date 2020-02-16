@@ -27,6 +27,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 Game_1.Game.RES._bg_3.texture,
             ];
             _this._background = new Sprite(_this.fieldTextures[Math.floor(Math.random() * 4)]);
+            _this._background.scale.set(Game_1.Game.TILE / _this._background.texture.width);
             _this.addChild(_this._background);
             return _this;
         }

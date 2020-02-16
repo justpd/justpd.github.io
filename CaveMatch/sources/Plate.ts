@@ -16,8 +16,8 @@ export class Plate extends Container {
     
     constructor() {
         super();
-
         this._background = new Sprite(this.fieldTextures[Math.floor(Math.random() * 4)]);
+        this._background.scale.set(Game.TILE / this._background.texture.width);
         this.addChild(this._background);
     }
 }

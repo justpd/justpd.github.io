@@ -56,12 +56,19 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Game.prototype, "combo", {
+            get: function () {
+                return this._combo;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Game.prototype.setUI = function () {
             this._background.width = Game.WIDTH;
             this._background.height = Game.HEIGHT;
             this._background.alpha = 0.6;
             this._textStyle = new TextStyle({
-                fontSize: 68, fontFamily: "Visitor TT2 BFK", fill: '#00ccff', align: "center", fontWeight: "600",
+                fontSize: 80, fontFamily: "Visitor TT2 BFK", fill: '#ffffff', align: "center", fontWeight: "600",
                 dropShadow: true,
                 dropShadowDistance: 6,
                 dropShadowBlur: 5,
@@ -73,6 +80,7 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             this._comboText.anchor.set(0.5);
             this._comboText.position.set(Game.WIDTH / 2, Game.HEIGHT - 120);
             this._comboText.alpha = 0;
+            this._comboText.style.fontSize = 100;
             this._timerText.style = this._textStyle;
             this._timerText.anchor.set(0.5);
             this._timerText.position.set(Game.WIDTH * 0.8, 150);
@@ -127,24 +135,21 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             if (this._state == Game.GAMEOVER)
                 this.endGame();
         };
-        Game.prototype.upCombo = function () {
+        Game.prototype.upCombo = function (value) {
             if (this._combo == 0) {
                 TweenMax.to(this._comboText, 0.2, { alpha: 1 });
+                this._combo = 1;
             }
             else {
-                TweenMax.fromTo(this._comboText.scale, 1, { x: 1, y: 1 }, { x: 0.75, y: 0.75 });
+                TweenMax.fromTo(this._comboText.scale, 1, { x: 1.75, y: 1.75 }, { x: 1, y: 1 });
+                this._combo += 1;
             }
-            this._combo += 1;
             this._comboText.text = "x" + this._combo.toString();
-            this._score += 50 * this._combo;
+            this._score += value * this._combo;
             this._scoreText.text = this._score.toString();
         };
         Game.prototype.onTimerTick = function () {
             this._time -= 1;
-            if (this._time < 60)
-                this._field.setOresCount(7);
-            else if (this._time < 120)
-                this._field.setOresCount(6);
             this.setTimerText();
         };
         Game.prototype.setTimerText = function () {
@@ -155,7 +160,7 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
         };
         Game.WIDTH = 768;
         Game.HEIGHT = 1366;
-        Game.TILE = 96;
+        Game.TILE = 90;
         Game.IDLE = 0;
         Game.INGAME = 1;
         Game.GAMEOVER = 2;

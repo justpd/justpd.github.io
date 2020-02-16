@@ -69,6 +69,13 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
                 }
             }
         };
+        Field.prototype.getRandomType = function () {
+            var type = Math.floor(Math.random() * this._oresCount) + 1;
+            if (Math.floor(Math.random() * 9) == 2) {
+                type = 6;
+            }
+            return type;
+        };
         // Генерация игрового поля заполненного тайлами
         Field.prototype.generateField = function () {
             if (this._tiles != null) {
@@ -81,7 +88,7 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
             for (var i = 0; i < 8; i++) {
                 this._tiles[i] = new Array(8);
                 for (var j = 0; j < 8; j++) {
-                    var type = Math.floor(Math.random() * this._oresCount) + 1;
+                    var type = this.getRandomType();
                     this._tiles[i][j] = new Tile_1.Tile(this, this._plates[i][j], [i, j]);
                     this.addChild(this._tiles[i][j]);
                     this._tiles[i][j].position.set(paddingX + j * Game_1.Game.TILE, paddingY + i * Game_1.Game.TILE);
@@ -97,7 +104,7 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
             for (var i = 0; i < this._tiles.length; i++) {
                 for (var j = 0; j < this._tiles[i].length; j++) {
                     if (this._tiles[i][j].type == 0)
-                        this._tiles[i][j].setType(Math.floor(Math.random() * this._oresCount) + 1, 0.5, 2);
+                        this._tiles[i][j].setType(this.getRandomType(), 0.5, 2);
                 }
             }
             var tl = new TimelineMax({ repeat: 1, repeatDelay: 0.5, onComplete: this.checkField.bind(this) });
@@ -193,10 +200,39 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
             for (var i = 0; i < matches.length; i++) {
                 for (var j = 0; j < matches[i].length; j++) {
                     var t = matches[i][j];
+                    // this._tiles[t.pos.x][t.pos.y].counted = false;
                     this._tiles[t.pos.x][t.pos.y].setType(0);
                 }
             }
             var tl = new TimelineMax({ repeat: 1, repeatDelay: 0.25, onComplete: this.dropTiles.bind(this) });
+        };
+        Field.prototype.getBlowArea = function (a) {
+            var upper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y];
+            var right = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y + 1];
+            var bottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y];
+            var left = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y - 1];
+            var leftupper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y - 1];
+            var rightupper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y + 1];
+            var leftbottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y - 1];
+            var rightbottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y + 1];
+            var result = new Array();
+            if (upper && upper.type != 6)
+                result.push(upper);
+            if (right && right.type != 6)
+                result.push(right);
+            if (bottom && bottom.type != 6)
+                result.push(bottom);
+            if (left && left.type != 6)
+                result.push(left);
+            if (leftupper && leftupper.type != 6)
+                result.push(leftupper);
+            if (rightupper && rightupper.type != 6)
+                result.push(rightupper);
+            if (leftbottom && leftbottom.type != 6)
+                result.push(leftbottom);
+            if (rightbottom && rightbottom.type != 6)
+                result.push(rightbottom);
+            return result;
         };
         // Анимация удаления совпадений
         Field.prototype.animateDestroy = function (matches) {
@@ -204,9 +240,15 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
                 this.switchInteractive(false);
                 for (var i = 0; i < matches.length; i++) {
                     for (var j = 0; j < matches[i].length; j++) {
-                        this.parent.emit('eventComboUp');
-                        TweenMax.to(matches[i][j].item, 0.4, { alpha: 0, rotation: 2.5 });
-                        TweenMax.to(matches[i][j].item.scale, 0.4, { x: 0, y: 0 });
+                        if (!matches[i][j].counted) {
+                            this.parent.emit('eventComboUp', matches[i][j].value);
+                            var game = this.parent;
+                            matches[i][j].blow(game.combo);
+                            if (matches[i][j].type == 6) {
+                                var blow = this.getBlowArea(matches[i][j]);
+                                matches.push(blow);
+                            }
+                        }
                     }
                 }
                 createjs.Sound.play(Game_1.Game.SOUND_DESTROY, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 1);
@@ -229,8 +271,8 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
                     if (this._tiles[i][j].type == this._tiles[i][j - 1].type && this._tiles[i][j].type != 0) {
                         if (h_temp == null) {
                             h_temp = new Array();
-                            h_temp.push(this._tiles[i][j]);
                             h_temp.push(this._tiles[i][j - 1]);
+                            h_temp.push(this._tiles[i][j]);
                         }
                         else {
                             h_temp.push(this._tiles[i][j]);
@@ -238,15 +280,17 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
                     }
                     else {
                         if (h_temp != null) {
-                            if (h_temp.length > 2)
+                            if (h_temp.length > 2) {
                                 h_matches.push(h_temp);
+                            }
                             h_temp = null;
                         }
                     }
                 }
                 if (h_temp != null) {
-                    if (h_temp.length > 2)
+                    if (h_temp.length > 2) {
                         h_matches.push(h_temp);
+                    }
                     h_temp = null;
                 }
             }
@@ -255,8 +299,8 @@ define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require,
                     if (this._tiles[i][j].type == this._tiles[i - 1][j].type && this._tiles[i][j].type != 0) {
                         if (v_temp == null) {
                             v_temp = new Array();
-                            v_temp.push(this._tiles[i][j]);
                             v_temp.push(this._tiles[i - 1][j]);
+                            v_temp.push(this._tiles[i][j]);
                         }
                         else {
                             v_temp.push(this._tiles[i][j]);

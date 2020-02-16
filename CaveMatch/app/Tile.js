@@ -16,6 +16,8 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
     Object.defineProperty(exports, "__esModule", { value: true });
     var Sprite = PIXI.Sprite;
     var Container = PIXI.Container;
+    var Text = PIXI.Text;
+    var TextStyle = PIXI.TextStyle;
     var IDLE = 0;
     var SELECTED = 1;
     var Tile = /** @class */ (function (_super) {
@@ -29,6 +31,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 Game_1.Game.RES._green.texture,
                 Game_1.Game.RES._blue.texture,
                 Game_1.Game.RES._pink.texture,
+                Game_1.Game.RES._bomb.texture,
             ];
             _this._selectedTextures = [
                 null,
@@ -37,6 +40,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 Game_1.Game.RES.s_green.texture,
                 Game_1.Game.RES.s_blue.texture,
                 Game_1.Game.RES.s_pink.texture,
+                Game_1.Game.RES.s_bomb.texture,
             ];
             _this.pressedAlpha = 0.4;
             _this.isOver = true;
@@ -47,7 +51,18 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             };
             _this.pos.x = pos[0];
             _this.pos.y = pos[1];
+            _this.counted = false;
+            _this.value = 50;
             _this._field = field;
+            _this._points = new Text();
+            _this._points.style = new TextStyle({
+                fontSize: 60, fontFamily: "Visitor TT2 BFK", fill: '#ffffff', align: "center", fontWeight: "600",
+                dropShadow: true,
+                dropShadowDistance: 6,
+                dropShadowBlur: 5,
+            });
+            _this._points.anchor.set(0.5);
+            _this._points.position.set(Game_1.Game.TILE / 2 + 4, Game_1.Game.TILE / 2 + 4);
             _this.setState(IDLE);
             return _this;
         }
@@ -89,6 +104,8 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 }
             }.bind(this));
             this.addChild(this.item);
+            this.addChild(this._points);
+            this._points.alpha = 0;
             this.setType(t, fall, mult);
         };
         // Выбор шарика
@@ -147,6 +164,14 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 });
             }
         };
+        Tile.prototype.blow = function (combo) {
+            TweenMax.to(this.item, 0.4, { alpha: 0, rotation: 2.5 });
+            TweenMax.to(this.item.scale, 0.4, { x: 0, y: 0 });
+            this.counted = true;
+            this._points.text = (this.value * combo).toString();
+            TweenMax.fromTo(this._points, 0.3, { alpha: 0 }, { alpha: 1 });
+            TweenMax.fromTo(this._points.scale, 0.3, { x: 0, y: 0 }, { x: 1, y: 1 });
+        };
         // Установка типа шарика
         Tile.prototype.setType = function (t, fall, mult, event) {
             if (fall === void 0) { fall = 0; }
@@ -155,6 +180,11 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             if (fall > 0) {
                 var tl = new TimelineMax({ onComplete: this.onTileFall.bind(this, event) });
                 tl.fromTo(this.item, fall, { y: this.item.y - Game_1.Game.TILE * mult }, { y: this.item.y });
+            }
+            if (t == 0 && this.counted) {
+                this.counted = false;
+                TweenMax.fromTo(this._points, 0.75, { alpha: 1 }, { alpha: 0 });
+                TweenMax.fromTo(this._points.scale, 0.75, { x: 1, y: 1 }, { x: 0, y: 0 });
             }
             this.type = t;
             this.item.texture = this._itemTextures[this.type];
