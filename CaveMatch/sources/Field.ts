@@ -79,7 +79,7 @@ export class Field extends Container {
 
     private getRandomType() {
         let type = Math.floor(Math.random() * this._oresCount) + 1;
-            if (Math.floor(Math.random() * 9) == 2) {
+            if (Math.floor(Math.random() * 8) == 2) {
                 type = 6;
             }
         return type;

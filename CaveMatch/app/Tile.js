@@ -80,7 +80,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             this.item.buttonMode = true;
             this.item.on("pointerover", function () {
                 if (this._state == IDLE) {
-                    this.item.alpha = 0.75;
+                    this.item.alpha = 0.5;
                 }
             }.bind(this));
             this.item.on("pointerout", function () {
@@ -99,8 +99,16 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
                 }
             }.bind(this));
             this.item.on("pointerupoutside", function () {
-                if (this._state == SELECTED) {
-                    this.deselect();
+                // if (this._state == SELECTED) {
+                //     this.deselect();
+                // }
+            }.bind(this));
+            this.item.on("pointerup", function () {
+                // if (this._state == SELECTED) {
+                //     this.deselect();
+                // }
+                if (this._field.getSelectedTile() != null && this._field.getSelectedTile() != this) {
+                    this.swap();
                 }
             }.bind(this));
             this.addChild(this.item);
@@ -168,7 +176,16 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             TweenMax.to(this.item, 0.4, { alpha: 0, rotation: 2.5 });
             TweenMax.to(this.item.scale, 0.4, { x: 0, y: 0 });
             this.counted = true;
-            this._points.text = (this.value * combo).toString();
+            var value = (this.value * combo);
+            this._points.text = value.toString();
+            if (value >= 10000)
+                this._points.style.fontSize = 34;
+            else if (value >= 1000)
+                this._points.style.fontSize = 44;
+            else if (value >= 100)
+                this._points.style.fontSize = 54;
+            else
+                this._points.style.fontSize = 64;
             TweenMax.fromTo(this._points, 0.3, { alpha: 0 }, { alpha: 1 });
             TweenMax.fromTo(this._points.scale, 0.3, { x: 0, y: 0 }, { x: 1, y: 1 });
         };
