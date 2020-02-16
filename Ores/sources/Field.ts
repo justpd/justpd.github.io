@@ -1,6 +1,8 @@
 import Container = PIXI.Container;
+import Graphics = PIXI.Graphics;
 import { Game } from "./Game";
 import { Tile } from "./Tile";
+import { Plate } from "./Plate";
 
 declare let TweenMax: any;
 declare let TimelineMax: any;
@@ -8,6 +10,7 @@ declare let TimelineMax: any;
 export class Field extends Container {
 
     private _tiles: Tile[][];
+    private _plates: Plate[][];
     private _selectedTile: Tile;
     private _oresCount: number = 5;
 
@@ -15,8 +18,34 @@ export class Field extends Container {
         this._oresCount = value;
     }
 
+    private _rectMask: Graphics;
+
     constructor() {
         super();
+
+        this._rectMask = new Graphics();
+        this.addChild(this._rectMask);
+
+        this._rectMask.position.x = 0;
+        this._rectMask.position.y = 0;
+        this._rectMask.lineStyle(0);
+        this._rectMask.beginFill(0xffffff, 1);
+        this._rectMask.drawRect((Game.WIDTH - 8 * Game.TILE) / 2, (Game.HEIGHT - 8 * Game.TILE) / 2 + 100, Game.TILE * 8, Game.TILE * 8);
+
+        this.mask = this._rectMask;
+
+        let paddingX = (Game.WIDTH - 8 * Game.TILE) / 2;
+        let paddingY = (Game.HEIGHT - 8 * Game.TILE) / 2 + 100;
+
+        this._plates = new Array<Plate[]>(8);
+        for (let i = 0; i < 8; i++) {
+            this._plates[i] = new Array<Plate>(8);
+            for (let j = 0; j < 8; j++) {
+                this._plates[i][j] = new Plate();
+                this._plates[i][j].position.set(paddingX + j * Game.TILE, paddingY + i * Game.TILE);
+                this.addChild(this._plates[i][j]);
+            }
+        }
         this.on('eventSetField', this.generateField);
     }
 
@@ -56,18 +85,19 @@ export class Field extends Container {
         }
         this._tiles = new Array<Tile[]>(8);
 
-        let tileSize = 75;
-        let paddingX = (Game.WIDTH - 8 * tileSize) / 2;
-        let paddingY = (Game.HEIGHT - 8 * tileSize) / 2 + 100;
+        let paddingX = (Game.WIDTH - 8 * Game.TILE) / 2;
+        let paddingY = (Game.HEIGHT - 8 * Game.TILE) / 2 + 100;
 
         for (let i = 0; i < 8; i++) {
             this._tiles[i] = new Array<Tile>(8);
             for (let j = 0; j < 8; j++) {
                 let type = Math.floor(Math.random() * this._oresCount) + 1
-                this._tiles[i][j] = new Tile(this, type, [i, j]);
-                this._tiles[i][j].position.set(paddingX + j * tileSize, paddingY + i * tileSize);
+                
+                this._tiles[i][j] = new Tile(this, this._plates[i][j], [i, j]);
                 this.addChild(this._tiles[i][j]);
-                this._tiles[i][j].setType(type, 1.5, 8);
+
+                this._tiles[i][j].position.set(paddingX + j * Game.TILE, paddingY + i * Game.TILE);
+                this._tiles[i][j].setUp(type, 1.5, 8);
             }
         }
 
@@ -114,8 +144,11 @@ export class Field extends Container {
         return false;
     }
 
+    public areNeighbours(a: Tile, b: Tile = this._selectedTile): boolean {
+        return (Math.abs(a.pos.x - b.pos.x) + Math.abs(a.pos.y - b.pos.y)) == 1
+    }
     // Подсветка клеток на которые возможно походить
-    public highlightNeighbours(a: Tile): void {
+    public highlightNeighbours(a: Tile, hide: boolean = false): void {
         // Верхний равен верхнему тайлу от текущего и проверки строки над вернхим тайлом, либо null
         let upper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y];
         let right = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y + 1];
@@ -123,13 +156,13 @@ export class Field extends Container {
         let left = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y - 1];
 
         if (upper && this.createsNewMatch(a, upper))
-            upper.highlight();
+            upper.highlight(hide);
         if (right && this.createsNewMatch(a, right))
-            right.highlight();
+            right.highlight(hide);
         if (bottom && this.createsNewMatch(a, bottom))
-            bottom.highlight();
+            bottom.highlight(hide);
         if (left && this.createsNewMatch(a, left))
-            left.highlight();
+            left.highlight(hide);
     }
 
     //  Отключение подсветки клеток на которые возможно походить
@@ -181,7 +214,6 @@ export class Field extends Container {
         for (let i = 0; i < matches.length; i++) {
             for (let j = 0; j < matches[i].length; j++) {
                 let t = matches[i][j];
-                this.parent.emit('eventComboUp');
                 this._tiles[t.pos.x][t.pos.y].setType(0);
             }
         }
@@ -194,6 +226,7 @@ export class Field extends Container {
             this.switchInteractive(false);
             for (let i = 0; i < matches.length; i++) {
                 for (let j = 0; j < matches[i].length; j++) {
+                    this.parent.emit('eventComboUp');
                     TweenMax.to(matches[i][j].item, 0.4, { alpha: 0, rotation: 2.5 });
                     TweenMax.to(matches[i][j].item.scale, 0.4, { x: 0, y: 0 });
                 }
@@ -202,8 +235,8 @@ export class Field extends Container {
             createjs.Sound.play(Game.SOUND_DESTROY, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 1);
             let tl = new TimelineMax({ repeat: 1, repeatDelay: 0.425, onComplete: this.destroyMatches.bind(this, matches) });
         } else {
-            this.parent.emit('eventComboEnd');
             this.switchInteractive(true);
+            this.parent.emit('eventComboEnd');
         }
     }
 
@@ -214,7 +247,7 @@ export class Field extends Container {
         let v_temp: Tile[];
         let h_temp: Tile[];
 
-        let matches: any[] = new Array();
+        let matches: Tile[][] = new Array();
 
         for (let i = 0; i < this._tiles.length; i++) {
             for (let j = 1; j < this._tiles[i].length; j++) {

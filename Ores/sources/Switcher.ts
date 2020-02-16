@@ -9,7 +9,11 @@ export class Switcher extends Container {
     constructor(_norm: Texture, _switch: Texture) {
         super();
 
-        this._sprite = new Sprite(_norm);
+        if (createjs.Sound.muted) {
+            this._sprite = new Sprite(_switch);
+        } else {
+            this._sprite = new Sprite(_norm);
+        }
         this._sprite.anchor.set(0.5);
         this._sprite.interactive = true;
         this._sprite.buttonMode = true;

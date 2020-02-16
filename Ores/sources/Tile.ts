@@ -3,26 +3,32 @@ import Container = PIXI.Container;
 import Texture = PIXI.Texture;
 import { Field } from "./Field";
 import { Game } from "./Game";
-
+import { Plate } from "./Plate";
+let IDLE: number = 0;
+let SELECTED: number = 1;
 declare let TweenMax: any;
 declare let TimelineMax: any;
 
 export class Tile extends Container {
     public item: Sprite;
-    private _background: Sprite;
+
+    private _plate: Plate
+
     private _itemTextures: Texture[] = [
         null, // Пустая клетка
-        Game.RES.redBall.texture,
-        Game.RES.orangeBall.texture,
-        Game.RES.greenBall.texture,
-        Game.RES.dkBlueBall.texture,
-        Game.RES.blueBall.texture,
-        Game.RES.purpleBall.texture,
-        Game.RES.whiteBall.texture,
+        Game.RES._red.texture,
+        Game.RES._orange.texture,
+        Game.RES._green.texture,
+        Game.RES._blue.texture,
+        Game.RES._pink.texture,
     ];
-    private fieldTextures: Texture[] = [
-        Game.RES.field.texture,
-        Game.RES.fieldHighlighted.texture
+    private _selectedTextures: Texture[] = [
+        null, // Пустая клетка
+        Game.RES.s_red.texture,
+        Game.RES.s_orange.texture,
+        Game.RES.s_green.texture,
+        Game.RES.s_blue.texture,
+        Game.RES.s_pink.texture,
     ];
 
     protected pressedAlpha: number = 0.4;
@@ -31,11 +37,6 @@ export class Tile extends Container {
 
     private _state: number;
     private _field: Field;
-    private States = {
-        "IDLE": 1,
-        "SELECTED": 2,
-        "DISABLED": 3
-    }
 
     public pos = {
         "x": 0,
@@ -48,64 +49,67 @@ export class Tile extends Container {
         this._state = state;
     }
 
-    constructor(field: Field, type: number, pos: number[]) {
+    constructor(field: Field, _plate: Plate, pos: number[]) {
         super();
-
-        this._background = new Sprite(Game.RES.field.texture);
-        this.addChild(this._background);
 
         this.pos.x = pos[0];
         this.pos.y = pos[1];
-        this.item = new Sprite();
-        this.item.scale.set(0.8);
-        this.item.anchor.set(0.5);
-        this.item.position.set(75 / 2, 75 / 2);
-        this.item.interactive = true;
-        this.item.buttonMode = true;
 
         this._field = field;
 
-        this.setState(this.States.IDLE);
+        this.setState(IDLE);
+    }
 
+    public setUp(t: number, fall: number = 0, mult: number = 1) {
+        this.item = new Sprite();
+        this.item.scale.set(1);
+        this.item.anchor.set(0.5);
+        this.item.position.set(Game.TILE / 2, Game.TILE / 2);
+        this.item.interactive = true;
+        this.item.buttonMode = true;
         this.item.on("pointerover", function (): void {
-            if (this._state == this.States.IDLE) {
+            if (this._state == IDLE) {
                 this.item.alpha = 0.75;
             }
         }.bind(this));
 
         this.item.on("pointerout", function (): void {
-            if (this._state == this.States.IDLE) {
+            if (this._state == IDLE) {
                 this.item.alpha = 1;
             }
         }.bind(this));
 
         this.item.on("pointerdown", function (): void {
-            if (this._state == this.States.IDLE) {
+            if (this._state == IDLE) {
                 this.select();
             } else {
-                if (this._state == this.States.SELECTED) {
+                if (this._state == SELECTED) {
                     this.deselect();
                 }
             }
         }.bind(this));
 
         this.item.on("pointerupoutside", function (): void {
-            if (this._state == this.States.SELECTED) {
+            if (this._state == SELECTED) {
                 this.deselect();
             }
         }.bind(this));
-
-        this.setType(type);
+        
         this.addChild(this.item);
+        this.setType(t, fall, mult);
     }
 
     // Выбор шарика
     public select(): void {
         if (this._field.getSelectedTile() == null) {
-            TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: this.pressedAlpha });
             this._field.setSelectedTile(this);
-            this.setState(this.States.SELECTED);
             this._field.highlightNeighbours(this);
+            this.setState(SELECTED);
+
+            // TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: this.pressedAlpha });
+            this.item.texture = this._selectedTextures[this.type];
+            this.item.alpha = 1;
+
             createjs.Sound.play(Game.SOUND_SELECT, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.05);
         } else {
             this.swap();
@@ -118,8 +122,11 @@ export class Tile extends Container {
             this._field.setSelectedTile(null);
         }
         this._field.unHighlightNeighbours(this);
-        this.setState(this.States.IDLE);
-        TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: 1 });
+        this.setState(IDLE);
+
+        // TweenMax.fromTo(this.item, 0.3, { alpha: this.item.alpha }, { alpha: 1 });
+        this.item.texture = this._itemTextures[this.type]
+
         if (playSound)
             createjs.Sound.play(Game.SOUND_UNSELECT, createjs.Sound.INTERRUPT_ANY, 0, 0, 0, 0.05);
     }
@@ -132,23 +139,24 @@ export class Tile extends Container {
 
             this._field.switchInteractive(false);
             this._field.unHighlightNeighbours(selectedTile);
-            let y1 = (selectedTile.pos.x - this.pos.x) * 75;
-            let x1 = (selectedTile.pos.y - this.pos.y) * 75;
+            let y1 = (selectedTile.pos.x - this.pos.x) * Game.TILE;
+            let x1 = (selectedTile.pos.y - this.pos.y) * Game.TILE;
 
             selectedTile.item.alpha = 1;
             this.item.alpha = 1;
+            selectedTile.item.texture = selectedTile._itemTextures[selectedTile.type];
 
 
             TweenMax.to(this.item, 0.75, { x: this.item.x + x1, y: this.item.y + y1 });
             TweenMax.to(selectedTile.item, 0.75, { x: this.item.x - x1, y: this.item.y - y1 });
             let tl = new TimelineMax({
-                repeat: 1, repeatDelay: 0.8, onComplete: function () {
+                repeat: 1, repeatDelay: 1, onComplete: function () {
                     let temp = this.type;
                     var selected = this._field.getSelectedTile();
                     this.setType(selected.type);
                     selected.setType(temp);
-                    TweenMax.set(this.item, { x: 37.5, y: 37.5 });
-                    TweenMax.set(selected.item, { x: 37.5, y: 37.5 });
+                    TweenMax.set(this.item, { x: Game.TILE / 2, y: Game.TILE / 2 });
+                    TweenMax.set(selected.item, { x: Game.TILE / 2, y: Game.TILE / 2 });
                     selected.deselect(false);
 
                     let matches = this._field.findMatches();
@@ -162,13 +170,13 @@ export class Tile extends Container {
     public setType(t: number, fall: number = 0, mult: number = 1, event: string = ""): void {
         if (fall > 0) {
             let tl = new TimelineMax({ onComplete: this.onTileFall.bind(this, event) });
-            tl.fromTo(this.item, fall, { y: this.item.y - 75 * mult }, { y: this.item.y });
+            tl.fromTo(this.item, fall, { y: this.item.y - Game.TILE * mult }, { y: this.item.y });
         }
         this.type = t;
         this.item.texture = this._itemTextures[this.type];
         this.item.alpha = 1;
         this.item.rotation = 0;
-        this.item.scale.set(0.8);
+        this.item.scale.set(1);
     }
 
     public onTileFall(event: string): void {
@@ -177,18 +185,12 @@ export class Tile extends Container {
     }
 
     // Подсветка клетки
-    public highlight(): void {
-        if (this._background.texture == this.fieldTextures[0]) {
-            this._background.texture = this.fieldTextures[1];
-        }
+    public highlight(hide: boolean): void {
         this.highlighted = true;
     }
 
     // Отмена подсветки клетки
     public unHighlight(): void {
-        if (this._background.texture == this.fieldTextures[1]) {
-            this._background.texture = this.fieldTextures[0];
-        }
         this.highlighted = false;
     }
 

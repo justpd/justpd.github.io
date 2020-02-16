@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -39,19 +42,26 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             _this.setSounds();
             _this.addChild(_this._background);
             _this.addChild(_this._field);
-            _this.addChild(_this._soundSwitcher);
+            // this.addChild(this._soundSwitcher);
             _this.addChild(_this._comboText);
             _this.addChild(_this._timerText);
             _this.addChild(_this._scoreText);
             _this._field.emit('eventSetField');
             return _this;
         }
+        Object.defineProperty(Game.prototype, "state", {
+            get: function () {
+                return this._state;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Game.prototype.setUI = function () {
             this._background.width = Game.WIDTH;
             this._background.height = Game.HEIGHT;
             this._background.alpha = 0.6;
             this._textStyle = new TextStyle({
-                fontSize: 68, fontFamily: "Unispace", fill: '#00ccff', align: "center", fontWeight: "600",
+                fontSize: 68, fontFamily: "Visitor TT2 BFK", fill: '#00ccff', align: "center", fontWeight: "600",
                 dropShadow: true,
                 dropShadowDistance: 6,
                 dropShadowBlur: 5,
@@ -111,19 +121,23 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             var tl = new TimelineMax({ onComplete: function () { this._restartButton.setInteractive(true); }.bind(this) });
             tl.fromTo(this._restartButton, 2, { x: Game.WIDTH / 2, y: Game.HEIGHT - 300, alpha: 0 }, { x: Game.WIDTH / 2, y: Game.HEIGHT * 0.55, alpha: 1 });
         };
-        Game.prototype.upCombo = function () {
-            if (this._combo == 0)
-                TweenMax.to(this._comboText, 0.2, { alpha: 1 });
-            this._combo += 1;
-            this._comboText.text = "x" + this._combo.toString();
-            this._score += 50 * this._combo;
-            this._scoreText.text = this._score.toString();
-        };
         Game.prototype.endCombo = function () {
             this._combo = 0;
             TweenMax.to(this._comboText, 0.5, { alpha: 0 });
             if (this._state == Game.GAMEOVER)
                 this.endGame();
+        };
+        Game.prototype.upCombo = function () {
+            if (this._combo == 0) {
+                TweenMax.to(this._comboText, 0.2, { alpha: 1 });
+            }
+            else {
+                TweenMax.fromTo(this._comboText.scale, 1, { x: 1, y: 1 }, { x: 0.75, y: 0.75 });
+            }
+            this._combo += 1;
+            this._comboText.text = "x" + this._combo.toString();
+            this._score += 50 * this._combo;
+            this._scoreText.text = this._score.toString();
         };
         Game.prototype.onTimerTick = function () {
             this._time -= 1;
@@ -139,8 +153,9 @@ define(["require", "exports", "./Field", "./Switcher", "./Button"], function (re
             var keyChar = (sec < 10) ? "0" : "";
             this._timerText.text = min.toString() + ":" + keyChar + sec.toString();
         };
-        Game.WIDTH = 720;
-        Game.HEIGHT = 1280;
+        Game.WIDTH = 768;
+        Game.HEIGHT = 1366;
+        Game.TILE = 96;
         Game.IDLE = 0;
         Game.INGAME = 1;
         Game.GAMEOVER = 2;

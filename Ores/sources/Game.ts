@@ -9,10 +9,12 @@ import { MenuButton } from "./Button"
 declare let TweenMax: any;
 declare let TimelineMax: any;
 
+
 export class Game extends Container {
 
-    public static WIDTH: number = 720;
-    public static HEIGHT: number = 1280;
+    public static WIDTH: number = 768;
+    public static HEIGHT: number = 1366;
+    public static TILE: number = 96;
     public static IDLE: number = 0;
     public static INGAME: number = 1;
     public static GAMEOVER: number = 2;
@@ -35,9 +37,12 @@ export class Game extends Container {
     private _timeToPlay: number = 180;
     private _time: number;
     private _timer: any;
-    private _state: number;
     private _score: number;
     private _combo: number;
+    private _state: number;
+    public get state(): number {
+        return this._state;
+    }
 
 
     constructor(resources: any) {
@@ -64,7 +69,7 @@ export class Game extends Container {
 
         this.addChild(this._background);
         this.addChild(this._field);
-        this.addChild(this._soundSwitcher);
+        // this.addChild(this._soundSwitcher);
         this.addChild(this._comboText);
         this.addChild(this._timerText);
         this.addChild(this._scoreText);
@@ -78,7 +83,7 @@ export class Game extends Container {
         this._background.alpha = 0.6;
 
         this._textStyle = new TextStyle({
-            fontSize: 68, fontFamily: "Unispace", fill: '#00ccff', align: "center", fontWeight: "600",
+            fontSize: 68, fontFamily: "Visitor TT2 BFK", fill: '#00ccff', align: "center", fontWeight: "600",
             dropShadow: true,
             dropShadowDistance: 6,
             dropShadowBlur: 5,
@@ -152,9 +157,20 @@ export class Game extends Container {
             { x: Game.WIDTH / 2, y: Game.HEIGHT * 0.55, alpha: 1 });
     }
 
+    private endCombo(): void {
+        this._combo = 0;
+        TweenMax.to(this._comboText, 0.5, { alpha: 0 });
+
+        if (this._state == Game.GAMEOVER)
+            this.endGame();
+    }
+    
     private upCombo(): void {
-        if (this._combo == 0)
+        if (this._combo == 0) {
             TweenMax.to(this._comboText, 0.2, { alpha: 1 });
+        } else {
+            TweenMax.fromTo(this._comboText.scale, 1, { x: 1, y: 1 }, { x: 0.75, y: 0.75 })
+        }
 
         this._combo += 1;
         this._comboText.text = "x" + this._combo.toString();
@@ -163,13 +179,7 @@ export class Game extends Container {
     }
 
 
-    private endCombo(): void {
-        this._combo = 0;
-        TweenMax.to(this._comboText, 0.5, { alpha: 0 });
 
-        if (this._state == Game.GAMEOVER)
-            this.endGame();
-    }
 
 
     private onTimerTick(): void {

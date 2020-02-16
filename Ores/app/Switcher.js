@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -17,7 +20,12 @@ define(["require", "exports"], function (require, exports) {
         __extends(Switcher, _super);
         function Switcher(_norm, _switch) {
             var _this = _super.call(this) || this;
-            _this._sprite = new Sprite(_norm);
+            if (createjs.Sound.muted) {
+                _this._sprite = new Sprite(_switch);
+            }
+            else {
+                _this._sprite = new Sprite(_norm);
+            }
             _this._sprite.anchor.set(0.5);
             _this._sprite.interactive = true;
             _this._sprite.buttonMode = true;

@@ -1,22 +1,45 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-define(["require", "exports", "./Game", "./Tile"], function (require, exports, Game_1, Tile_1) {
+define(["require", "exports", "./Game", "./Tile", "./Plate"], function (require, exports, Game_1, Tile_1, Plate_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Container = PIXI.Container;
+    var Graphics = PIXI.Graphics;
     var Field = /** @class */ (function (_super) {
         __extends(Field, _super);
         function Field() {
             var _this = _super.call(this) || this;
             _this._oresCount = 5;
+            _this._rectMask = new Graphics();
+            _this.addChild(_this._rectMask);
+            _this._rectMask.position.x = 0;
+            _this._rectMask.position.y = 0;
+            _this._rectMask.lineStyle(0);
+            _this._rectMask.beginFill(0xffffff, 1);
+            _this._rectMask.drawRect((Game_1.Game.WIDTH - 8 * Game_1.Game.TILE) / 2, (Game_1.Game.HEIGHT - 8 * Game_1.Game.TILE) / 2 + 100, Game_1.Game.TILE * 8, Game_1.Game.TILE * 8);
+            _this.mask = _this._rectMask;
+            var paddingX = (Game_1.Game.WIDTH - 8 * Game_1.Game.TILE) / 2;
+            var paddingY = (Game_1.Game.HEIGHT - 8 * Game_1.Game.TILE) / 2 + 100;
+            _this._plates = new Array(8);
+            for (var i = 0; i < 8; i++) {
+                _this._plates[i] = new Array(8);
+                for (var j = 0; j < 8; j++) {
+                    _this._plates[i][j] = new Plate_1.Plate();
+                    _this._plates[i][j].position.set(paddingX + j * Game_1.Game.TILE, paddingY + i * Game_1.Game.TILE);
+                    _this.addChild(_this._plates[i][j]);
+                }
+            }
             _this.on('eventSetField', _this.generateField);
             return _this;
         }
@@ -53,17 +76,16 @@ define(["require", "exports", "./Game", "./Tile"], function (require, exports, G
                 this._tiles = null;
             }
             this._tiles = new Array(8);
-            var tileSize = 75;
-            var paddingX = (Game_1.Game.WIDTH - 8 * tileSize) / 2;
-            var paddingY = (Game_1.Game.HEIGHT - 8 * tileSize) / 2 + 100;
+            var paddingX = (Game_1.Game.WIDTH - 8 * Game_1.Game.TILE) / 2;
+            var paddingY = (Game_1.Game.HEIGHT - 8 * Game_1.Game.TILE) / 2 + 100;
             for (var i = 0; i < 8; i++) {
                 this._tiles[i] = new Array(8);
                 for (var j = 0; j < 8; j++) {
                     var type = Math.floor(Math.random() * this._oresCount) + 1;
-                    this._tiles[i][j] = new Tile_1.Tile(this, type, [i, j]);
-                    this._tiles[i][j].position.set(paddingX + j * tileSize, paddingY + i * tileSize);
+                    this._tiles[i][j] = new Tile_1.Tile(this, this._plates[i][j], [i, j]);
                     this.addChild(this._tiles[i][j]);
-                    this._tiles[i][j].setType(type, 1.5, 8);
+                    this._tiles[i][j].position.set(paddingX + j * Game_1.Game.TILE, paddingY + i * Game_1.Game.TILE);
+                    this._tiles[i][j].setUp(type, 1.5, 8);
                 }
             }
             // Блокировка шариков в полёте
@@ -101,21 +123,26 @@ define(["require", "exports", "./Game", "./Tile"], function (require, exports, G
                 return true;
             return false;
         };
+        Field.prototype.areNeighbours = function (a, b) {
+            if (b === void 0) { b = this._selectedTile; }
+            return (Math.abs(a.pos.x - b.pos.x) + Math.abs(a.pos.y - b.pos.y)) == 1;
+        };
         // Подсветка клеток на которые возможно походить
-        Field.prototype.highlightNeighbours = function (a) {
+        Field.prototype.highlightNeighbours = function (a, hide) {
+            if (hide === void 0) { hide = false; }
             // Верхний равен верхнему тайлу от текущего и проверки строки над вернхим тайлом, либо null
             var upper = this._tiles[a.pos.x - 1] && this._tiles[a.pos.x - 1][a.pos.y];
             var right = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y + 1];
             var bottom = this._tiles[a.pos.x + 1] && this._tiles[a.pos.x + 1][a.pos.y];
             var left = this._tiles[a.pos.x] && this._tiles[a.pos.x][a.pos.y - 1];
             if (upper && this.createsNewMatch(a, upper))
-                upper.highlight();
+                upper.highlight(hide);
             if (right && this.createsNewMatch(a, right))
-                right.highlight();
+                right.highlight(hide);
             if (bottom && this.createsNewMatch(a, bottom))
-                bottom.highlight();
+                bottom.highlight(hide);
             if (left && this.createsNewMatch(a, left))
-                left.highlight();
+                left.highlight(hide);
         };
         //  Отключение подсветки клеток на которые возможно походить
         Field.prototype.unHighlightNeighbours = function (a) {
@@ -166,7 +193,6 @@ define(["require", "exports", "./Game", "./Tile"], function (require, exports, G
             for (var i = 0; i < matches.length; i++) {
                 for (var j = 0; j < matches[i].length; j++) {
                     var t = matches[i][j];
-                    this.parent.emit('eventComboUp');
                     this._tiles[t.pos.x][t.pos.y].setType(0);
                 }
             }
@@ -178,6 +204,7 @@ define(["require", "exports", "./Game", "./Tile"], function (require, exports, G
                 this.switchInteractive(false);
                 for (var i = 0; i < matches.length; i++) {
                     for (var j = 0; j < matches[i].length; j++) {
+                        this.parent.emit('eventComboUp');
                         TweenMax.to(matches[i][j].item, 0.4, { alpha: 0, rotation: 2.5 });
                         TweenMax.to(matches[i][j].item.scale, 0.4, { x: 0, y: 0 });
                     }
@@ -186,8 +213,8 @@ define(["require", "exports", "./Game", "./Tile"], function (require, exports, G
                 var tl = new TimelineMax({ repeat: 1, repeatDelay: 0.425, onComplete: this.destroyMatches.bind(this, matches) });
             }
             else {
-                this.parent.emit('eventComboEnd');
                 this.switchInteractive(true);
+                this.parent.emit('eventComboEnd');
             }
         };
         // Поиск возможных совпадений по горизонтали и цвертикали

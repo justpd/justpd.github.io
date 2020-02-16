@@ -29,7 +29,7 @@ export class Button extends Container {
         this._text.anchor.set(0.5, 0.5);
         this._text.position.set(0, this._sprite.height / 2);
         this._text.style = new TextStyle({
-            fontSize: _fonstSize, fontFamily: "Unispace", fill: _fill, align: _align, fontWeight: "400",
+            fontSize: _fonstSize, fontFamily: "Visitor TT2 BFK", fill: _fill, align: _align, fontWeight: "400",
             dropShadow: false
         });
         this.setShadowEffects();

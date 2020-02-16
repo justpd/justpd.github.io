@@ -1,7 +1,10 @@
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -34,7 +37,7 @@ define(["require", "exports", "./Game"], function (require, exports, Game_1) {
             _this._text.anchor.set(0.5, 0.5);
             _this._text.position.set(0, _this._sprite.height / 2);
             _this._text.style = new TextStyle({
-                fontSize: _fonstSize, fontFamily: "Unispace", fill: _fill, align: _align, fontWeight: "400",
+                fontSize: _fonstSize, fontFamily: "Visitor TT2 BFK", fill: _fill, align: _align, fontWeight: "400",
                 dropShadow: false
             });
             _this.setShadowEffects();
