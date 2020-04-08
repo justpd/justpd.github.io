@@ -60,7 +60,7 @@ define(["require", "exports", "./NetworkProvider"], function (require, exports, 
         };
         Game.prototype.openConnection = function () {
             console.log('Game >>> Trying to connect with Server: 62.68.128.229:9090.');
-            this._networkProvider.openConnection('ws://62.68.128.229:9090/ws');
+            this._networkProvider.openConnection('wss://62.68.128.229:9090/ws');
         };
         // ==== Events ================================================ //
         Game.prototype.eventConnected = function () {
